@@ -19,6 +19,9 @@ Module Screenshot:
 
 ![Full](./images/SunnyPortal1.png)
 
+The displayed data shown above is fetched through the SunnyPortal website [SunnyPortal](https://www.sunnyportal.com)
+
+![Full](./images/SunnyPortal2.png)
 
 ---
 
@@ -69,7 +72,8 @@ To configure the SunnyPortal module, you need to do the following:
 
 1. Add the Module to the global MagicMirror `config.js` 
 2. Edit the global config to add the username and password values for your SunnyPortal installation
-3. [optional] Edit `MMM-SunnyPortal.css` for your own CSS taste
+3. [optional] Modify `MMM-SunnyPortal.css` to your own CSS taste
+4. [optional] Add your own language translation file in the translations folder (currently english & dutch are provided)
 
 
 Add the module to the modules array in the `config/config.js` file by adding the following section. 
@@ -95,7 +99,6 @@ Add the module to the modules array in the `config/config.js` file by adding the
 ---
 
 #### Configuration Options 
-
 
 | Option            | Default                       | Description  |
 |:----------------- |:----------------------------- |:------------ | 
