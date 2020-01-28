@@ -5,7 +5,7 @@ Display your SunnyPortal Solar Panel output
 
 | STATUS: | Version | Date | 
 |:------- |:------- |:---- |
-| Working | `1.0.0` | 2020-01-28 |
+| Working | 1.0.0 | 2020-01-28 |
 
 
 #### What is this module doing?
