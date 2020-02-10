@@ -12,7 +12,7 @@ npm install request --save
 echo "Installing flow package locally:"
 npm install flow --save
 echo "Installing chartjs package locally:"
-npm install chartjs --save
+npm install chart.js --save
 
 echo "Required packages successfully installed"
 exit 1

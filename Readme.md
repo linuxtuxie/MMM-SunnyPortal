@@ -29,7 +29,7 @@ This module depends on the following *npm* packages:
 
 * [request](https://github.com/request/request)  - Simplified HTTP client
 * [flow](https://github.com/willconant/flow-js)  - Makes it easy to express multi-step asynchronous logic in Node or the browser
-* [chartjs](https://github.com/chartjs/Chart.js) - Simple HTML5 charts using the canvas element.
+* [chartjs](https://github.com/chartjs/Chart.js) - Simple yet flexible JavaScript charting for designers & developers.
 
 These are also listed in the `package.json` file and should be installed automatically when using *npm*.
 However, those may require other packages. 
@@ -51,7 +51,7 @@ To install the dependencies: *request*, *flow* and *chartjs*, do:
 ```bash
 npm install request --save
 npm install flow --save
-npm install chartjs --save
+npm install chart.js --save
 
 ```
 
@@ -71,7 +71,7 @@ To configure the SunnyPortal module, you need to do the following:
 1. Add the Module to the global MagicMirror `config.js` 
 2. Edit the global config to add the username and password values for your SunnyPortal installation
 3. [optional] Modify `MMM-SunnyPortal.css` to your own CSS taste
-4. [optional] Add your own language translation file in the translations folder (currently english & dutch are provided)
+4. [optional] Add your own language translation file in the translations folder (currently english, dutch and french are provided)
 
 
 Add the module to the modules array in the `config/config.js` file by adding the following section. 
