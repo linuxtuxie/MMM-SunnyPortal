@@ -46,7 +46,7 @@ git clone https://github.com/linuxtuxie/MMM-SunnyPortal.git
 cd MMM-SunnyPortal
 ```
 
-To install the dependencies: *request*, *flow* and *chartjs*, do:
+Next install the dependencies: *request*, *flow* and *chartjs*, by running:
 
 ```bash
 npm install request --save
@@ -55,7 +55,7 @@ npm install chart.js --save
 
 ```
 
-Alternatively, on a *unix* based distribution, you can try to install all the dependencies with the Bash script:
+Alternatively, on a *unix* based distribution, you can try to install all the above mentioned dependencies with the Bash script:
 
 ```bash
 chmod 755 install_deps.sh

@@ -1,7 +1,7 @@
 {
   "LOADING": "Loading....",
   "NODATA": "No data!",
-  "DAYOUTPUT": "Year output: ",
-  "MONTHOUTPUT": "Year output: ",
+  "DAYOUTPUT": "Day output: ",
+  "MONTHOUTPUT": "Month output: ",
   "YEAROUTPUT": "Year output: "
 }
