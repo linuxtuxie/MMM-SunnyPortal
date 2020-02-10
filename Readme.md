@@ -1,12 +1,10 @@
 ## MagicMirror Module: SunnyPortal
 
-Display your SunnyPortal Solar Panel output
+Display your SunnyPortal Solar Panel Inverter output
 
-
-| STATUS: | Version | Date | 
+| Status | Version | Date | 
 |:------- |:------- |:---- |
 | Working | 1.0.0 | 2020-01-28 |
-
 
 #### What is this module doing?
 
