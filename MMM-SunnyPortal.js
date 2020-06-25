@@ -13,7 +13,7 @@ Module.register("MMM-SunnyPortal",{
 	  username : '',
 	  password : '',
 	  plantOID : '',
-	  chartcolor1: '#303030',
+	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	},
   
@@ -21,8 +21,9 @@ Module.register("MMM-SunnyPortal",{
 	start: function() {
 	  console.log("Starting module: " + this.name);
 	  this.payload = false;
+	  refresh = (this.config.updateInterval <= 900 ? 900 : this.config.updateInterval) * 1000;
 	  this.sendSocketNotification("START_SUNNYPORTAL", {
-		updateInterval: this.config.updateInterval * 1000,
+		updateInterval: refresh,
 		url: this.config.url,
 		username: this.config.username,
 		password: this.config.password
