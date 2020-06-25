@@ -13,6 +13,8 @@ Module.register("MMM-SunnyPortal",{
 	  username : '',
 	  password : '',
 	  plantOID : '',
+	  chartcolor1: '#303030',
+	  chartcolor2: '#909090',
 	},
   
 	// Override start method.
@@ -178,15 +180,19 @@ Module.register("MMM-SunnyPortal",{
 	  graph.width = this.config.width;
 	  graph.height = this.config.height/2;
 	  var ctx = graph.getContext("2d");
+	  var gradient = ctx.createLinearGradient(0,100,0,0);
+	  gradient.addColorStop(0,this.config.chartcolor1);
+      gradient.addColorStop(1,this.config.chartcolor2);
 	  Chart.defaults.global.defaultFontSize = 14;
-
+	  
 	  var sunnyportalChart = new Chart(ctx, {
 		type: 'line',
 		   data: {
 		  labels: times,
 		  datasets: [{
 			data: power,
-			backgroundColor: '#FF0000',
+			backgroundColor: gradient,
+			borderColor: gradient,
 			borderWidth: 1,
 			pointRadius: 0,
 			fill: 'origin'
@@ -247,15 +253,19 @@ Module.register("MMM-SunnyPortal",{
 		graph.width = this.config.width/2-10;
 		graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
+ 	    var gradient = ctx.createLinearGradient(0,150,0,0);
+	    gradient.addColorStop(0,this.config.chartcolor1);
+        gradient.addColorStop(1,this.config.chartcolor2);
 		Chart.defaults.global.defaultFontSize = 14;
 
 		var sunnyportalChart = new Chart(ctx, {
-		  type: 'line',
+		  type: 'bar',
 			 data: {
 			labels: times,
 			datasets: [{
 			  data: power,
-			  backgroundColor: '#FF0000',
+			  backgroundColor: gradient,
+			  borderColor: gradient,
 			  borderWidth: 1,
 			  pointRadius: 0,
 			  fill: 'origin'
@@ -315,15 +325,19 @@ Module.register("MMM-SunnyPortal",{
 		graph.width = this.config.width/2-10;
 		graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
+		var gradient = ctx.createLinearGradient(0,150,0,0);
+		gradient.addColorStop(0,this.config.chartcolor1);
+		gradient.addColorStop(1,this.config.chartcolor2);
 		Chart.defaults.global.defaultFontSize = 14;
-		
+
 		var sunnyportalChart = new Chart(ctx, {
-		  type: 'line',
+		  type: 'bar',
 			 data: {
 			labels: times,
 			datasets: [{
 			  data: power,
-			  backgroundColor: '#FF0000',
+			  backgroundColor: gradient,
+			  borderColor: gradient,
 			  borderWidth: 1,
 			  pointRadius: 0,
 			  fill: 'origin'
