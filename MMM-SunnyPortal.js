@@ -188,7 +188,7 @@ Module.register("MMM-SunnyPortal",{
 	  graph.width = this.config.width;
 	  graph.height = this.config.height/2;
 	  var ctx = graph.getContext("2d");
-	  var gradient = ctx.createLinearGradient(0,100,0,0);
+	  var gradient = ctx.createLinearGradient(0,150,0,0);
 	  gradient.addColorStop(0,this.config.chartcolor1);
       gradient.addColorStop(1,this.config.chartcolor2);
 	  Chart.defaults.global.defaultFontSize = 14;
