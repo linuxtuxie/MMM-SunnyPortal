@@ -13,24 +13,16 @@ Module.register("MMM-SunnyPortal",{
 	  username : '',
 	  password : '',
 	  plantOID : '',
+	  chartcolor1: '#121212',
+	  chartcolor2: '#909090',
 	},
-  
-	// Override start method.
-	start: function() {
-	  console.log("Starting module: " + this.name);
-	  this.payload = false;
-	  this.sendSocketNotification("START_SUNNYPORTAL", {
-		updateInterval: this.config.updateInterval * 1000,
-		url: this.config.url,
-		username: this.config.username,
-		password: this.config.password
-	  });
-	},
+
   
 	// Define required scripts. Chart.js needed for the graph.
 	getScripts: function() {
 	  return [
 		'modules/MMM-SunnyPortal/node_modules/chart.js/dist/Chart.bundle.js',
+		'moment.js'
 	  ];
 	},
   
@@ -46,10 +38,28 @@ Module.register("MMM-SunnyPortal",{
 		};
 	},
   
+	// Override start method.
+	start: function() {
+	  console.log("Starting module: " + this.name);
+
+	  // Set locale.
+      moment.locale(config.language);
+
+	  this.payload = false;
+	  refresh = (this.config.updateInterval <= 900 ? 900 : this.config.updateInterval) * 1000;
+	  this.sendSocketNotification("START_SUNNYPORTAL", {
+		updateInterval: refresh,
+		url: this.config.url,
+		username: this.config.username,
+		password: this.config.password
+	  });
+	},
+
 	socketNotificationReceived: function(notification, payload) {
 	  var msgDay = document.getElementById("msgDay");
 	  var msgMonth = document.getElementById("msgMonth");
 	  var msgYear = document.getElementById("msgYear");
+
 	  // was not able to receive data
 	  if (notification == "ERROR") {
 		msgDay.innerHTML=payload.error;
@@ -178,15 +188,19 @@ Module.register("MMM-SunnyPortal",{
 	  graph.width = this.config.width;
 	  graph.height = this.config.height/2;
 	  var ctx = graph.getContext("2d");
+	  var gradient = ctx.createLinearGradient(0,100,0,0);
+	  gradient.addColorStop(0,this.config.chartcolor1);
+      gradient.addColorStop(1,this.config.chartcolor2);
 	  Chart.defaults.global.defaultFontSize = 14;
-
+	  
 	  var sunnyportalChart = new Chart(ctx, {
 		type: 'line',
 		   data: {
 		  labels: times,
 		  datasets: [{
 			data: power,
-			backgroundColor: '#FF0000',
+			backgroundColor: gradient,
+			borderColor: gradient,
 			borderWidth: 1,
 			pointRadius: 0,
 			fill: 'origin'
@@ -215,6 +229,8 @@ Module.register("MMM-SunnyPortal",{
 			}],
 			xAxes: [{
 			  type: "time",
+			  beginAtZero: true,
+			  offset: true,
 			  time: {
 				unit: 'hour',
 				unitStepSize: 0.5,	
@@ -247,15 +263,19 @@ Module.register("MMM-SunnyPortal",{
 		graph.width = this.config.width/2-10;
 		graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
+ 	    var gradient = ctx.createLinearGradient(0,150,0,0);
+	    gradient.addColorStop(0,this.config.chartcolor1);
+        gradient.addColorStop(1,this.config.chartcolor2);
 		Chart.defaults.global.defaultFontSize = 14;
 
 		var sunnyportalChart = new Chart(ctx, {
-		  type: 'line',
+		  type: 'bar',
 			 data: {
 			labels: times,
 			datasets: [{
 			  data: power,
-			  backgroundColor: '#FF0000',
+			  backgroundColor: gradient,
+			  borderColor: gradient,
 			  borderWidth: 1,
 			  pointRadius: 0,
 			  fill: 'origin'
@@ -284,6 +304,8 @@ Module.register("MMM-SunnyPortal",{
 			  }],
 			  xAxes: [{
 				type: "time",
+				beginAtZero: true,
+				offset: true,
 				time: {
 				  unit: 'day',
 				  unitStepSize: 0.5,			
@@ -315,15 +337,19 @@ Module.register("MMM-SunnyPortal",{
 		graph.width = this.config.width/2-10;
 		graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
+		var gradient = ctx.createLinearGradient(0,150,0,0);
+		gradient.addColorStop(0,this.config.chartcolor1);
+		gradient.addColorStop(1,this.config.chartcolor2);
 		Chart.defaults.global.defaultFontSize = 14;
-		
+
 		var sunnyportalChart = new Chart(ctx, {
-		  type: 'line',
+		  type: 'bar',
 			 data: {
 			labels: times,
 			datasets: [{
 			  data: power,
-			  backgroundColor: '#FF0000',
+			  backgroundColor: gradient,
+			  borderColor: gradient,
 			  borderWidth: 1,
 			  pointRadius: 0,
 			  fill: 'origin'
@@ -352,11 +378,13 @@ Module.register("MMM-SunnyPortal",{
 			  }],
 			  xAxes: [{
 				type: "time",
+				beginAtZero: true,
+				offset: true,
 				time: {
 				  unit: 'month',
 				  unitStepSize: 0.5,
 				  displayFormats: {
-					month: 'M'
+					month: 'MMM'
 				  },
 				},
 				gridLines: {
@@ -364,8 +392,14 @@ Module.register("MMM-SunnyPortal",{
 				  borderDash: [5, 5]
 				},
 				ticks: {
+				  callback: function(value, index){
+				    return moment.monthsShort(index % 12, "MMM");
+				  },
 				  fontColor: '#DDD',
 				  fontSize: 16,
+				  autoSkip: false,
+				  minRotation: 0,
+				  source: 'data',
 				}
 			  }]
 			},		

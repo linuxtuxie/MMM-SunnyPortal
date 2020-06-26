@@ -7,6 +7,8 @@ var OPEN_INVERTER_URL = '/FixedPages/InverterSelection.aspx';
 var SET_FILE_DATE_URL = '/FixedPages/InverterSelection.aspx';
 var CURRENT_PRODUCTION_URL = '/Dashboard?_=1';
 var DOWNLOAD_RESULTS_URL = '/Templates/DownloadDiagram.aspx?down=diag';
+var DASHBOARD_URL = '/FixedPages/Dashboard.aspx';
+var USERPROFILE_URL = '/Templates/UserProfile.aspx';
 
 /**
  * Sunny Portal API Node Library
@@ -36,11 +38,14 @@ var SunnyPortal = function(opts) {
 	var jar = request.jar(); // create new cookie jar
 	var viewstate = null;
 	var viewstategenerator = null;
-		
-	var requestOpts = {		
-		jar : jar
+
+	var requestOpts = {
+		jar : jar,
+		agentOptions: {
+			rejectUnauthorized: false
+		}
 	};
-	
+
 	// Let's first fetch the VIEWSTATE & VIEWSTATEGENERATOR hidden parameter values
 	request.get(url + LOGIN_URL, requestOpts, function (err, httpResponse, body) {
 		if (err) {
@@ -54,20 +59,23 @@ var SunnyPortal = function(opts) {
 		viewstategenerator = body.match(/<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="(.*)" \/>/)[1];
 		console.log("Fetched VIEWSTATE value: " + viewstate);
 		console.log("Fetched VIEWSTATEGENERATOR value: " + viewstategenerator);
-		
+
 		requestOpts = {
 			headers : {
-				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 71.0 (64-bit) for Windows
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0',
-			}, 
+				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 77.0 (64-bit) for Windows
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+			},
 			form : {
 				__VIEWSTATE : viewstate,
-				__VIEWSTATEGENERATOR : viewstategenerator,													
+				__VIEWSTATEGENERATOR : viewstategenerator,
 				ctl00$ContentPlaceHolder1$Logincontrol1$txtUserName : username,
 				ctl00$ContentPlaceHolder1$Logincontrol1$txtPassword : password,
 				ctl00$ContentPlaceHolder1$Logincontrol1$LoginBtn : 'Login',
-			},		
-			jar : jar
+			},
+			jar : jar,
+			agentOptions: {
+				rejectUnauthorized: false
+			}
 		};
 
 		// Now Let's login by Posting the data
@@ -77,15 +85,18 @@ var SunnyPortal = function(opts) {
 				callback(err);
 				return ;
 			}
-			
+
 			// Hack to check for login. Should forward to dashboard.
-			if(httpResponse.headers.location && httpResponse.headers.location=='/FixedPages/Dashboard.aspx') {
-				console.log("SUCCESSFULLY LOGGED IN");
-				callback(err, jar);				
+			if(httpResponse.headers.location && httpResponse.headers.location === DASHBOARD_URL) {
+				console.log("SUCCESSFULLY LOGGED IN TO DASHBOARD");
+				callback(err, jar);
+			} else if(httpResponse.headers.location && httpResponse.headers.location === USERPROFILE_URL) {
+				console.log("SUCCESSFULLY LOGGED IN TO USERPROFILE");
+				callback(err, jar);
 			} else {
-				console.log("Login Failed, no redirect to Dashboard");
-				callback(new Error('Login Failed, no redirect to Dashboard'));
-			}			
+				console.log("Login Failed, no redirect to Dashboard or UserProfile"+ httpResponse.headers.location);
+				callback(new Error('Login Failed, no redirect to Dashboard or UserProfile'));
+			}
 		});
 		});
 	};
@@ -93,38 +104,44 @@ var SunnyPortal = function(opts) {
 	var _openInverter = function(jar, callback) {
 
 		var requestOpts = {
-			method : 'GET',			
-			jar : jar
-		}	
+			method : 'GET',
+			jar : jar,
+			agentOptions: {
+				rejectUnauthorized: false
+			}
+		}
 
 		request(url + OPEN_INVERTER_URL, requestOpts, function (err, httpResponse, body) {
-			console.log("HTTP Result: "+ httpResponse.statusCode);
-			// Filter out value for the ctl00_HiddenPlantOID hidden parameter
-			plantOID = body.match(/<input type="hidden" name="ctl00\$HiddenPlantOID" id="ctl00_HiddenPlantOID" value="(.*)" \/>/)[1];
-			console.log("Fetched ctl00_HiddenPlantOID value: " + plantOID);
 			if (err) {
 				console.error('Could not open inverter')
 				callback(err);
 			}
+			console.log("HTTP Result: "+ httpResponse.statusCode);
+			// Filter out value for the ctl00_HiddenPlantOID hidden parameter
+			plantOID = body.match(/<input type="hidden" name="ctl00\$HiddenPlantOID" id="ctl00_HiddenPlantOID" value="(.*)" \/>/)[1];
+			console.log("Fetched ctl00_HiddenPlantOID value: " + plantOID);
 			callback(err, body);
 		});
 	};
 
 	var _setFileDate = function(datetype, month, day, year, jar, callback) {				
-  
+
 		var requestOpts = {
 			headers : {
-				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 71.0 (64-bit) for Windows
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0',			
-			}, 		
-			form : {				
+				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 77.0 (64-bit) for Windows
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',			
+			},
+			form : {
 				__EVENTTARGET : '',
 				__EVENTARGUMENT : '',
 				ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DeviceSelection$HiddenPlantOID : plantOID,				 
 				ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$UseIntervalHour : '0',                 
 				ctl00$HiddenPlantOID : plantOID
-			},			
-			jar : jar
+			},
+			jar : jar,
+			agentOptions: {
+				rejectUnauthorized: false
+			}
         };
         // Depending on the datetype we are going to add the necessary hidden parameters to the form
         if (datetype == 'day') {
@@ -146,33 +163,34 @@ var SunnyPortal = function(opts) {
 			callback();
 		} else {
 			request.post(url + SET_FILE_DATE_URL, requestOpts, function (err, httpResponse, body) {
-				console.log("HTTP Result: "+ httpResponse.statusCode);
 				if (err) {
 					console.error('Setting File Date failed:', err);
 					callback(err);
 					return ;
-            };			
-            
+				};
+			console.log("HTTP Result: "+ httpResponse.statusCode);
 			callback(err, body);
 		});
-		}	   
+		}
 	};
 
 	var _downloadResults = function(jar, callback) {
-		// This call is going to return a CSV file 
+		// This call is going to return a CSV file
 		var requestOpts = {
 			method : 'GET',
-			jar : jar
+			jar : jar,
+			agentOptions: {
+				rejectUnauthorized: false
+			}
 		}
-        
+
 		request(url + DOWNLOAD_RESULTS_URL, requestOpts, function(err, httpResponse, body) {
-			console.log("HTTP Result: "+ httpResponse.statusCode);
 			if (err) {
 				console.error('CSV download failed:', err);
 				callback(err);
 				return ;
             };
-           
+			console.log("HTTP Result: "+ httpResponse.statusCode);
 			callback(err, body);
 		});
 	}
@@ -183,7 +201,7 @@ var SunnyPortal = function(opts) {
 	* @method currentProduction
 	* @param {Number} month
 	* @param {Number} day
-	* @param {Number} year 
+	* @param {Number} year
 	* @param {Function} callback A callback function once current production is recieved.  Will return a JSON object of the current status.
 	*/
 	var currentProduction = function(callback) {
@@ -194,9 +212,12 @@ var SunnyPortal = function(opts) {
 
 			var requestOpts = {
 				method : 'GET',
-				jar : jar
-			}	
-			
+				jar : jar,
+				agentOptions: {
+					rejectUnauthorized: false
+				}
+			}
+
 			// The timestamp is just ignored. Using 1.
 			request(url + CURRENT_PRODUCTION_URL, requestOpts, function (err, httpResponse, body) {
 				if (err) {
@@ -209,13 +230,13 @@ var SunnyPortal = function(opts) {
 	};
 
 	/**
-	* Returns historical production for a given day.  
+	* Returns historical production for a given day.
 	*
     * @method historicalProduction
     * @param {String} datetype Determins if we need to fetch day, month or year data
 	* @param {Number} month
 	* @param {Number} day
-	* @param {Number} year 
+	* @param {Number} year
 	* @param {Function} callback A callback function once historical production is recieved. Will return a JSON object of the days production.
 	*/
 	var historicalProduction = function(datetype, month, day, year, callback) {
@@ -233,8 +254,8 @@ var SunnyPortal = function(opts) {
 				finalJar = jar;
 				_openInverter(finalJar, this);
 			},
-			function(err, body) {                              
-                _setFileDate(datetype, month, day, year, finalJar, this);           
+			function(err, body) {
+                _setFileDate(datetype, month, day, year, finalJar, this);
 			},
 			function(err, body) {
 				_downloadResults(finalJar, this);
@@ -245,7 +266,7 @@ var SunnyPortal = function(opts) {
                 var times = [];
                 var date;
                 var lineItems = body.split('\n');
-                
+
                 // Skip the first line of the CSV file. It is a header as the example shows below
                 // Day CSV result 
 				// ;SB1.5-1VL-40 966 / Power / Mean Values  [kW]0
@@ -264,7 +285,7 @@ var SunnyPortal = function(opts) {
                 // Jan 20;4.824
                 // Feb 20;
                 // Mar 20;
-                                
+
 				for(i=1; i<lineItems.length; i++) {
 					var entries = lineItems[i].split(';');
 					if(entries[0] && entries[1]) {
@@ -280,19 +301,19 @@ var SunnyPortal = function(opts) {
 						    if (ampm == 'AM' && hour == 12) {
 							    hour = 0;
                             }
-                        
+
                             //We need to substract 1 from the month because in Javascript: January=0 in Sunnyportal: January=1;
 						    date = new Date(year, month-1, day, hour, minute);
 						    // If set to midnight the next day, add another day. Their response is messed up
 						    if (hour == 0 && minute == 0) {
 							    date.setDate(date.getDate() + 1);
-						    }                                                                                
+						    }
                         } else if (datetype=='month') {
                             var d = entries[0].split('/')[1];
                             // I'm only interested in the day value...we are going to use the parameter value for month and year
                             date = new Date(year, month - 1 , d, 12, 0); // Using ISO Format
                         } else if (datetype=='year') {
-                            var m = entries[0].split(' ')[0];                            
+                            var m = entries[0].split(' ')[0];
                             // Because only the last 2 digits of the year are returned we are going to use the year parameter value... 
                             // we could prepend the returned value with 20...but then the script will fail in the next century ;)
                             var months = [
@@ -303,13 +324,13 @@ var SunnyPortal = function(opts) {
                             date = new Date (year,months.indexOf(m), 1, 12, 0);
                         }
                         // Add the date results to the array
-                        times.push(date);						
+                        times.push(date);
                         // Add the power results to the array
                         power.push(isNaN(parseFloat(entries[1])) ? 0 : parseFloat(entries[1]));
 					}
 				}
-                response[0] = times;						
-                response[1] = power;						
+                response[0] = times;
+                response[1] = power;
 				callback(err, response);
 			}
 		);
@@ -336,31 +357,30 @@ module.exports = NodeHelper.create({
 		// We save this.started (update timer) status, to prevent mutiple timer restarts
         // for each new client connection/instance.
 		var self = this;
-		
+
 		function startup(payload) {
-			   
 				var sunnyPortal = new SunnyPortal(payload);
-			
+
 				var now = new Date();
 				var month = now.getMonth()+1;
 				var day = now.getDate();
 				var year = now.getFullYear();
 				sunnyPortal.historicalProduction('day', month, day, year, function(err, data) {
-					self.dayData = data;        
+					self.dayData = data;
 					self.processDayData(self);
 				});
 
 				sunnyPortal.historicalProduction('month', month, day, year, function(err, data) {
-					self.monthData = data;       
+					self.monthData = data;
 					self.processMonthData(self);
 				});
 
 				sunnyPortal.historicalProduction('year', month, day, year, function(err, data) {
-					self.yearData = data;        
+					self.yearData = data;
 					self.processYearData(self);
-				}); 			
+				});
 		}
-   		 
+
 		if (notification === "START_SUNNYPORTAL" && this.started == false) {				
 			console.log("SocketNotification START_SUNNYPORTAL received for the first time...setting updateInterval to " + payload.updateInterval + "ms");
 			startup(payload); // When the MagicMirror module is called the first time, we are immediatly going to fetch data
@@ -373,10 +393,10 @@ module.exports = NodeHelper.create({
 			self.processYearData(self);
 		}
   },
- 
+
   processDayData: function(self) {
     console.log("Starting function processDayData with data: " + self.dayData);
-     
+
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_DAY', {
         data:  self.dayData
@@ -385,7 +405,7 @@ module.exports = NodeHelper.create({
 
   processMonthData: function(self) {
     console.log("Starting function processMonthData with data: " + self.monthData);
-     
+
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_MONTH', {
         data:  self.monthData
@@ -394,7 +414,7 @@ module.exports = NodeHelper.create({
 
   processYearData: function(self) {
     console.log("Starting function processYearData with data: " + self.yearData);
-     
+
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_YEAR', {
         data:  self.yearData
