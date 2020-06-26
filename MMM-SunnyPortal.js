@@ -16,24 +16,13 @@ Module.register("MMM-SunnyPortal",{
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	},
-  
-	// Override start method.
-	start: function() {
-	  console.log("Starting module: " + this.name);
-	  this.payload = false;
-	  refresh = (this.config.updateInterval <= 900 ? 900 : this.config.updateInterval) * 1000;
-	  this.sendSocketNotification("START_SUNNYPORTAL", {
-		updateInterval: refresh,
-		url: this.config.url,
-		username: this.config.username,
-		password: this.config.password
-	  });
-	},
+
   
 	// Define required scripts. Chart.js needed for the graph.
 	getScripts: function() {
 	  return [
 		'modules/MMM-SunnyPortal/node_modules/chart.js/dist/Chart.bundle.js',
+		'moment.js'
 	  ];
 	},
   
@@ -49,10 +38,28 @@ Module.register("MMM-SunnyPortal",{
 		};
 	},
   
+	// Override start method.
+	start: function() {
+	  console.log("Starting module: " + this.name);
+
+	  // Set locale.
+      moment.locale(config.language);
+
+	  this.payload = false;
+	  refresh = (this.config.updateInterval <= 900 ? 900 : this.config.updateInterval) * 1000;
+	  this.sendSocketNotification("START_SUNNYPORTAL", {
+		updateInterval: refresh,
+		url: this.config.url,
+		username: this.config.username,
+		password: this.config.password
+	  });
+	},
+
 	socketNotificationReceived: function(notification, payload) {
 	  var msgDay = document.getElementById("msgDay");
 	  var msgMonth = document.getElementById("msgMonth");
 	  var msgYear = document.getElementById("msgYear");
+
 	  // was not able to receive data
 	  if (notification == "ERROR") {
 		msgDay.innerHTML=payload.error;
@@ -222,6 +229,8 @@ Module.register("MMM-SunnyPortal",{
 			}],
 			xAxes: [{
 			  type: "time",
+			  beginAtZero: true,
+			  offset: true,
 			  time: {
 				unit: 'hour',
 				unitStepSize: 0.5,	
@@ -295,6 +304,8 @@ Module.register("MMM-SunnyPortal",{
 			  }],
 			  xAxes: [{
 				type: "time",
+				beginAtZero: true,
+				offset: true,
 				time: {
 				  unit: 'day',
 				  unitStepSize: 0.5,			
@@ -367,11 +378,13 @@ Module.register("MMM-SunnyPortal",{
 			  }],
 			  xAxes: [{
 				type: "time",
+				beginAtZero: true,
+				offset: true,
 				time: {
 				  unit: 'month',
 				  unitStepSize: 0.5,
 				  displayFormats: {
-					month: 'M'
+					month: 'MMM'
 				  },
 				},
 				gridLines: {
@@ -379,8 +392,14 @@ Module.register("MMM-SunnyPortal",{
 				  borderDash: [5, 5]
 				},
 				ticks: {
+				  callback: function(value, index){
+				    return moment.monthsShort(index % 12, "MMM");
+				  },
 				  fontColor: '#DDD',
 				  fontSize: 16,
+				  autoSkip: false,
+				  minRotation: 0,
+				  source: 'data',
 				}
 			  }]
 			},		
