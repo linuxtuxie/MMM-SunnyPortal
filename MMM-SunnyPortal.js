@@ -80,7 +80,7 @@ Module.register("MMM-SunnyPortal",{
 			}
 			// Only show 2 digits
 			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgDay.innerHTML = this.translate("DAYOUTPUT") + total + "kW"; 
+			msgDay.innerHTML = this.translate("DAYOUTPUT") + total + "kWh"; 
 		  this.drawDayChart(payload.data[1], payload.data[0]);
 		}
 	} else if (notification == "SUNNYPORTAL_MONTH") {
@@ -98,7 +98,7 @@ Module.register("MMM-SunnyPortal",{
 			}
 			// Only show 2 digits
 			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total + "kW"; 
+			msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total + "kWh"; 
 		  this.drawMonthChart(payload.data[1], payload.data[0]);
 		}
 	} else if (notification == "SUNNYPORTAL_YEAR") {
@@ -116,7 +116,7 @@ Module.register("MMM-SunnyPortal",{
 			}
 			// Only show 2 digits
 			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgYear.innerHTML = this.translate("YEAROUTPUT") + total + "kW"; 
+			msgYear.innerHTML = this.translate("YEAROUTPUT") + total + "kWh"; 
 		  this.drawYearChart(payload.data[1], payload.data[0]);
 		}
 	  }  else if (notification == "SUNNYPORTAL_TOTAL") {
@@ -134,7 +134,7 @@ Module.register("MMM-SunnyPortal",{
 			}
 			// Only show 2 digits
 			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total + "kW";
+			msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total + "kWh";
 		  this.drawTotalChart(payload.data[1], payload.data[0]);
 		}
 	  }
@@ -327,7 +327,7 @@ Module.register("MMM-SunnyPortal",{
 				display: true,
 				scaleLabel: {
 				  display: true,
-				  labelString: 'kW',
+				  labelString: 'kWh',
 				  fontColor: '#FFFFFF',
 				  fontSize:16
 				  },
@@ -401,7 +401,7 @@ Module.register("MMM-SunnyPortal",{
 				display: true,
 				scaleLabel: {
 				  display: true,
-				  labelString: 'kW',
+				  labelString: 'kWh',
 				  fontColor: '#FFFFFF',
 				  fontSize:16
 				  },
@@ -481,7 +481,7 @@ Module.register("MMM-SunnyPortal",{
 				display: true,
 				scaleLabel: {
 				  display: true,
-				  labelString: 'kW',
+				  labelString: 'kWh',
 				  fontColor: '#FFFFFF',
 				  fontSize:16
 				  },
