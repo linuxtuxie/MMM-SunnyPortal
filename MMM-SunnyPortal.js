@@ -15,6 +15,7 @@ Module.register("MMM-SunnyPortal",{
 	  plantOID : '',
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
+	  convertUnits: true,
 	},
 
   
@@ -78,9 +79,15 @@ Module.register("MMM-SunnyPortal",{
 			for (power of payload.data[1]) {
 				total += power*0.25;
 			}
-			// Only show 2 digits
-			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgDay.innerHTML = this.translate("DAYOUTPUT") + total + "kWh"; 
+			if (this.config.convertUnits && total >=1000) {
+				// Only show 2 digits, display in MWh
+				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
+				msgDay.innerHTML = this.translate("DAYOUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
+			} else {
+				// Only show 2 digits, display in kWH
+				total = Math.round( total * 100 + Number.EPSILON ) / 100;
+				msgDay.innerHTML = this.translate("DAYOUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
+			}
 		  this.drawDayChart(payload.data[1], payload.data[0]);
 		}
 	} else if (notification == "SUNNYPORTAL_MONTH") {
@@ -96,9 +103,15 @@ Module.register("MMM-SunnyPortal",{
 			for (power of payload.data[1]) {
 				total += power;
 			}
-			// Only show 2 digits
-			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total + "kWh"; 
+			if (this.config.convertUnits && total >=1000) {
+				// Only show 2 digits, display in MWh
+				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
+				msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
+			} else {
+				// Only show 2 digits, display in kWH
+				total = Math.round( total * 100 + Number.EPSILON ) / 100;
+				msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
+			}
 		  this.drawMonthChart(payload.data[1], payload.data[0]);
 		}
 	} else if (notification == "SUNNYPORTAL_YEAR") {
@@ -114,9 +127,15 @@ Module.register("MMM-SunnyPortal",{
 			for (power of payload.data[1]) {
 				total += power;
 			}
-			// Only show 2 digits
-			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgYear.innerHTML = this.translate("YEAROUTPUT") + total + "kWh"; 
+			if (this.config.convertUnits && total >=1000) {
+				// Only show 2 digits, display in MWh
+				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
+				msgYear.innerHTML = this.translate("YEAROUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
+			} else {
+				// Only show 2 digits, display in kWH
+				total = Math.round( total * 100 + Number.EPSILON ) / 100;
+				msgYear.innerHTML = this.translate("YEAROUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
+			}
 		  this.drawYearChart(payload.data[1], payload.data[0]);
 		}
 	  }  else if (notification == "SUNNYPORTAL_TOTAL") {
@@ -132,9 +151,15 @@ Module.register("MMM-SunnyPortal",{
 			for (power of payload.data[1]) {
 				total += power;
 			}
-			// Only show 2 digits
-			total = Math.round( total * 100 + Number.EPSILON ) / 100;
-			msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total + "kWh";
+			if (this.config.convertUnits && total >=1000) {
+				// Only show 2 digits, display in MWh
+				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
+				msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
+			} else {
+				// Only show 2 digits, display in kWH
+				total = Math.round( total * 100 + Number.EPSILON ) / 100;
+				msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
+			}
 		  this.drawTotalChart(payload.data[1], payload.data[0]);
 		}
 	  }
