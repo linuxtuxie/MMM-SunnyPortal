@@ -61,6 +61,7 @@ Module.register("MMM-SunnyPortal",{
 	  var msgDay = document.getElementById("msgDay");
 	  var msgMonth = document.getElementById("msgMonth");
 	  var msgYear = document.getElementById("msgYear");
+	  var msgTotal = document.getElementById("msgTotal");
 
 	  // was not able to receive data
 	  if (notification == "ERROR") {
@@ -138,10 +139,10 @@ Module.register("MMM-SunnyPortal",{
 			}
 		  this.drawYearChart(payload.data[1], payload.data[0]);
 		}
-	  }  else if (notification == "SUNNYPORTAL_TOTAL") {
+	  } else if (notification == "SUNNYPORTAL_TOTAL") {
 		// no data received from node_helper.js
 		if (!payload.data || payload.data.length == 0) {
-		  msgYear.innerHTML = this.translate("NODATA");
+		  msgTotal.innerHTML = this.translate("NODATA");
 		  return;
 		} else {
 			console.log("Going to draw Total chart with the following data: ");
