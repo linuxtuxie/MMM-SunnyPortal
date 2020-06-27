@@ -3,5 +3,6 @@
   "NODATA": "pas de données!",
   "DAYOUTPUT": "Rendement du jour: ",
   "MONTHOUTPUT": "Rendement du mois: ",
-  "YEAROUTPUT": "Rendement d'anneé: "
+  "YEAROUTPUT": "Rendement d'anneé: ",
+  "TOTALOUTPUT": "Rendement total: "
 }

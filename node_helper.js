@@ -154,6 +154,8 @@ var SunnyPortal = function(opts) {
         } else if (datetype == 'year') {
             requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$SelectedIntervalID'] = '5';
             requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerYear'] =  year;
+		} else if (datetype == 'total') {
+            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$SelectedIntervalID'] = '6';
 		}
 
 		// If the datetype is day and the provided date is the current date, we may not post the SET_FILE_DATE_URL
@@ -322,7 +324,10 @@ var SunnyPortal = function(opts) {
                                 'Oct', 'Nov', 'Dec'
                                 ];
                             date = new Date (year,months.indexOf(m), 1, 12, 0);
-                        }
+                        } else if  (datetype=='total') {
+							// We do not need an actual date, because entries[0] already contains the year data values.
+							date = entries[0];
+						}
                         // Add the date results to the array
                         times.push(date);
                         // Add the power results to the array
@@ -379,6 +384,11 @@ module.exports = NodeHelper.create({
 					self.yearData = data;
 					self.processYearData(self);
 				});
+
+				sunnyPortal.historicalProduction('total', month, day, year, function(err, data) {
+					self.totalData = data;
+					self.processTotalData(self);
+				});
 		}
 
 		if (notification === "START_SUNNYPORTAL" && this.started == false) {				
@@ -391,6 +401,7 @@ module.exports = NodeHelper.create({
 			self.processDayData(self);
 			self.processMonthData(self);
 			self.processYearData(self);
+			self.processTotalData(self);
 		}
   },
 
@@ -418,6 +429,15 @@ module.exports = NodeHelper.create({
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_YEAR', {
         data:  self.yearData
+    });
+  },
+
+  processTotalData: function(self) {
+    console.log("Starting function processTotalData with data: " + self.totalData);
+
+    // Send all to script
+    self.sendSocketNotification('SUNNYPORTAL_TOTAL', {
+        data:  self.totalData
     });
   },
 

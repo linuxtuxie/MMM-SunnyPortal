@@ -3,5 +3,6 @@
   "NODATA": "Geen gegevens!",
   "DAYOUTPUT": "Dagopbrengst: ",
   "MONTHOUTPUT": "Maandopbrengst: ",
-  "YEAROUTPUT": "Jaaropbrengst: "
+  "YEAROUTPUT": "Jaaropbrengst: ",
+  "TOTALOUTPUT": "Totaalopbrengst: "
 }

@@ -119,6 +119,24 @@ Module.register("MMM-SunnyPortal",{
 			msgYear.innerHTML = this.translate("YEAROUTPUT") + total + "kW"; 
 		  this.drawYearChart(payload.data[1], payload.data[0]);
 		}
+	  }  else if (notification == "SUNNYPORTAL_TOTAL") {
+		// no data received from node_helper.js
+		if (!payload.data || payload.data.length == 0) {
+		  msgYear.innerHTML = this.translate("NODATA");
+		  return;
+		} else {
+			console.log("Going to draw Total chart with the following data: ");
+			console.log(" - times: " + payload.data[0]);
+			console.log(" - power: " + payload.data[1]);
+			var total = 0;
+			for (power of payload.data[1]) {
+				total += power;
+			}
+			// Only show 2 digits
+			total = Math.round( total * 100 + Number.EPSILON ) / 100;
+			msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total + "kW";
+		  this.drawTotalChart(payload.data[1], payload.data[0]);
+		}
 	  }
 	},
   
@@ -171,10 +189,26 @@ Module.register("MMM-SunnyPortal",{
 	   msgYear.className = "small bright";
 	   container2.appendChild(msgYear);
 	   msgYear.innerHTML = this.translate("LOADING");
-	   
+
+	  var container3 = document.createElement("div");
+	  container3.className = "sunnyPortalContainer";
+
+	  var graphTotal = document.createElement("canvas");
+	  graphTotal.className = "small thin light";
+	  graphTotal.id = "sunnyportalTotalGraph";
+	  graphTotal.width = this.config.width;
+	  graphTotal.style.display = "none";
+	  container3.appendChild(graphTotal);
+	  var msgTotal = document.createElement("div");
+	  msgTotal.id = "msgTotal";
+	  msgTotal.className = "small bright";
+	  container3.appendChild(msgTotal);
+	  msgTotal.innerHTML = this.translate("LOADING");
+
 	   var container = document.createElement("div");
 	   container.appendChild(container1);
 	   container.appendChild(container2);
+	   container.appendChild(container3);
 
 	  return container;
 	},
@@ -404,6 +438,83 @@ Module.register("MMM-SunnyPortal",{
 				}
 			  }]
 			},		
+			legend: { display: false, },
+			borderColor: 'white',
+			borderWidth: 1,
+			cubicInterpolationMode: "default",
+		  }
+		});
+	},
+
+	drawTotalChart: function(power, times) {
+		var graph = document.getElementById("sunnyportalTotalGraph");
+		graph.style.display = "block";
+		graph.width = this.config.width;
+		graph.height = this.config.height/2;
+		var ctx = graph.getContext("2d");
+		var gradient = ctx.createLinearGradient(0,150,0,0);
+		gradient.addColorStop(0,this.config.chartcolor1);
+		gradient.addColorStop(1,this.config.chartcolor2);
+		Chart.defaults.global.defaultFontSize = 14;
+
+		var sunnyportalChart = new Chart(ctx, {
+		  type: 'bar',
+			 data: {
+			labels: times,
+			datasets: [{
+			  data: power,
+			  backgroundColor: gradient,
+			  borderColor: gradient,
+			  borderWidth: 1,
+			  pointRadius: 0,
+			  fill: 'origin'
+			}],
+		  },
+		  options: {
+			responsive: false,
+			maintainAspectRatio: true,
+			animation: {
+			duration: 0,
+			},
+			scales: {
+			  yAxes: [{
+				display: true,
+				scaleLabel: {
+				  display: true,
+				  labelString: 'kW',
+				  fontColor: '#FFFFFF',
+				  fontSize:16
+				  },
+				ticks: {
+				  display: true,
+				  fontColor: '#DDD',
+				  fontSize: 14,
+				}
+			  }],
+			  xAxes: [{
+				type: "time",
+				beginAtZero: true,
+				offset: true,
+				time: {
+				  unit: 'year',
+				  unitStepSize: 0.5,
+				  displayFormats: {
+					year: 'YYYY'
+				  },
+				},
+				gridLines: {
+				  display: true,
+				  borderDash: [5, 5]
+				},
+				ticks: {
+				  fontColor: '#DDD',
+				  fontSize: 16,
+				  autoSkip: false,
+				  minRotation: 0,
+				  source: 'data',
+				}
+			  }]
+			},
 			legend: { display: false, },
 			borderColor: 'white',
 			borderWidth: 1,
