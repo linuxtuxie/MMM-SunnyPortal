@@ -103,8 +103,8 @@ Add the module to the modules array in the `config/config.js` file by adding the
 |:----------------- |:----------------------------- |:------------ | 
 | url               | https://www.sunnyportal.com   | The SunnyPortal website's URL |
 | updateInterval    | `900`                         | Module data update rate [in seconds]<br>*Minimum value:* `900` (lower values are ignored)|
-| username          | ``                            | *Required* Username for logging into url |
-| password          | ``                            | *Required* Password for logging into url |
+| username          | ''                            | **Required** Username for logging into url |
+| password          | ''                            | **Required** Password for logging into url |
 | width             | `500`                         | The width of the module |
 | height            | `400`                         | The height of the module |
 | convertUnits      | `true`                        | Convert kwH to MWh if needed<br>*Possible values:* `true`, `false`|
