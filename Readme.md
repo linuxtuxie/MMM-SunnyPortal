@@ -102,7 +102,7 @@ Add the module to the modules array in the `config/config.js` file by adding the
 | Option            | Default                       | Description  |
 |:----------------- |:----------------------------- |:------------ | 
 | url               | https://www.sunnyportal.com   | The SunnyPortal website's URL |
-| updateInterval    | `900`                         | Module data update rate [in seconds]<br>*Minimum value:* `900` (lower values are ignored)|
+| updateInterval    | `900`                         | Module data update rate [in seconds]<br>*Minimum value:* `900` (a lower value is ignored)|
 | username          | ''                            | **Required** Username for logging into url |
 | password          | ''                            | **Required** Password for logging into url |
 | width             | `500`                         | The width of the module |
@@ -113,7 +113,7 @@ Add the module to the modules array in the `config/config.js` file by adding the
 > :warning: Please do not use an **updateInterval** shorter than 15 minutes (900 seconds). A too short 
 > setting will cause your account to get locked out by SunnyPortal, and the power output is always 
 > calculated in a time interval of 15 minutes...so there is no need to update in a shorter time interval.
-> There is a check to have a minimum value of 900 seconds. Any lower value will be ignored.
+> There is a check to have a minimum value of 900 seconds. Any lower value is ignored.
 
 #### Contribution
 
