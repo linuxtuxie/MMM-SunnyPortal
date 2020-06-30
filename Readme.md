@@ -105,7 +105,7 @@ Add the module to the modules array in the `config/config.js` file by adding the
 | updateInterval    | 900                           | Module data update rate [in seconds]<br>*Minimum value:* '900' (lower values are ignored)|
 | username          |                               | Username for logging into url |
 | password          |                               | Password for logging into url |
-| converUnits       |                               | Convert kwH to MWh if needed<br>*Possible values:* 'true', 'false'<br>*Default value*: 'true' |
+| convertUnits      |                               | Convert kwH to MWh if needed<br>*Possible values:* 'true', 'false'<br>*Default value*: 'true' |
 
 
 > :warning: Please do not use an **updateInterval** shorter than 15 minutes (900 seconds). A too short 
