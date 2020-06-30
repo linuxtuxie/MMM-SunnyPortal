@@ -85,11 +85,12 @@ Add the module to the modules array in the `config/config.js` file by adding the
         url: 'https://www.sunnyportal.com',     // The SunnyPortal website's URL
         updateInterval: 900,                    // How many times do we update the graphs? 
                                                 // Note: Do not update too frequently or you will get locked out
-                                                // 15 Minutes is ideal
+                                                // 15 Minutes is ideal and also kept as a minimum!
         username: '',                           // Username for logging into https://www.sunnyportal.com/
         password: '',                           // Password for logging into https://www.sunnyportal.com/
         width: 500,                             // The total width of the module
         height: 400                             // The total height of the module
+        convertUnits: true,                     // Convert kwH to MWh if needed (when kWh value > 1000)
     }
 },
 ```
@@ -101,14 +102,16 @@ Add the module to the modules array in the `config/config.js` file by adding the
 | Option            | Default                       | Description  |
 |:----------------- |:----------------------------- |:------------ | 
 | url               | https://www.sunnyportal.com   | The SunnyPortal website's URL |
-| updateInterval    | 900                           | Module data update rate [in seconds] |
+| updateInterval    | 900                           | Module data update rate [in seconds]<br>*Minimum value:* '900' (lower values are ignored)|
 | username          |                               | Username for logging into url |
 | password          |                               | Password for logging into url |
+| converUnits       |                               | Convert kwH to MWh if needed<br>*Possible values:* 'true', 'false'<br>*Default value*: 'true' |
 
 
 > :warning: Please do not use an **updateInterval** shorter than 15 minutes (900 seconds). A too short 
 > setting will cause your account to get locked out by SunnyPortal, and the power output is always 
-> calculated in a time interval of 15 minutes...so there is no need to update in a shorter time interval
+> calculated in a time interval of 15 minutes...so there is no need to update in a shorter time interval.
+> There is a check to have a minimum value of 900 seconds. Any lower value will be ignored.
 
 #### Contribution
 
