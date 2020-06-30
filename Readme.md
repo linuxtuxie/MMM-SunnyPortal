@@ -89,7 +89,7 @@ Add the module to the modules array in the `config/config.js` file by adding the
         username: '',                           // Username for logging into https://www.sunnyportal.com/
         password: '',                           // Password for logging into https://www.sunnyportal.com/
         width: 500,                             // The total width of the module
-        height: 400                             // The total height of the module
+        height: 400,                            // The total height of the module
         convertUnits: true,                     // Convert kwH to MWh if needed (when kWh value > 1000)
     }
 },
