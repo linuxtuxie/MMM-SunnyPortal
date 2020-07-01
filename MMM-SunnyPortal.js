@@ -16,7 +16,7 @@ Module.register("MMM-SunnyPortal",{
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	  convertUnits: true,
-	  includeGraphs: ["Month"], //Default ["all"] or define a set like: ["day", "month", "year", "total"]
+	  includeGraphs: ["Year", "Month"], //Default ["all"] or define a set like: ["day", "month", "year", "total"]
 	},
 
   
@@ -200,8 +200,7 @@ Module.register("MMM-SunnyPortal",{
 		}
 		
 		// Build the table
-		// Small table with only 1 graph.
-		if (tablesize == 1) {
+		if (tablesize == 1) { // Table with 1 graph
 			var container1 = document.createElement("div");
 			container1.className = "sunnyPortalContainer";
 			var graph1 = document.createElement("canvas");
@@ -209,36 +208,83 @@ Module.register("MMM-SunnyPortal",{
 			graph1.width = this.config.width;
 			graph1.height = this.config.height;
 			graph1.style.display = "none";
-			if (includeDayIndex > -1) {
-				graph1.id = "sunnyportalDayGraph";
-			} else if (includeMonthIndex > -1) {
-				graph1.id = "sunnyportalMonthGraph";
-			} else if (includeYearIndex > -1) {
-				graph1.id = "sunnyportalYearGraph";
-			} else {
-				graph1.id = "sunnyportalTotalGraph";
-			}
-			graph1.width = this.config.width;
-			graph1.height = this.config.height;
-			container1.appendChild(graph1);
-			
 			var msg1 = document.createElement("div");
 			msg1.className = "small bright";
-
 			if (includeDayIndex > -1) {
+				graph1.id = "sunnyportalDayGraph";
 				msg1.id = "msgDay";
 			} else if (includeMonthIndex > -1) {
+				graph1.id = "sunnyportalMonthGraph";
 				msg1.id = "msgMonth";
 			} else if (includeYearIndex > -1) {
+				graph1.id = "sunnyportalYearGraph";
 				msg1.id = "msgYear";
 			} else {
+				graph1.id = "sunnyportalTotalGraph";
 				msg1.id = "msgTotal";
 			}
+			container1.appendChild(graph1);
 			container1.appendChild(msg1);
 			msg1.innerHTML = this.translate("LOADING");
 			container.appendChild(container1);
 			return container;
-		} /*else {
+		} else if (tablesize == 2) { // Table with 2 graphs
+			var container1 = document.createElement("div");
+			container1.className = "sunnyPortalContainer";
+			var graph1 = document.createElement("canvas");
+			graph1.className = "small thin light";
+			graph1.width = this.config.width;
+			graph1.height = this.config.height/2;
+			graph1.style.display = "none";
+			var msg1 = document.createElement("div");
+			msg1.className = "small bright";
+			if (includeDayIndex == 0) {//((includeDayIndex > -1) && ((includeDayIndex < includeMonthIndex) || (includeDayIndex < includeYearIndex) || (includeDayIndex < includeTotalIndex))) {
+				graph1.id = "sunnyportalDayGraph";
+				msg1.id = "msgDay";
+			} else if (includeMonthIndex == 0) {//((includeMonthIndex > -1) && ((includeMonthIndex < includeDayIndex) || (includeMonthIndex < includeYearIndex) || (includeMonthIndex < includeTotalIndex))) {
+				graph1.id = "sunnyportalMonthGraph";
+				msg1.id = "msgMonth";
+			} else if (includeYearIndex == 0) {//((includeYearIndex > -1) && ((includeYearIndex < includeDayIndex) || (includeYearIndex < includeMonthIndex) || (includeYearIndex < includeTotalIndex))) {
+				graph1.id = "sunnyportalYearGraph";
+				msg1.id = "msgYear";
+			} else {
+				graph1.id = "sunnyportalTotalGraph";
+				msg1.id = "msgTotal";
+			}
+			container1.appendChild(graph1);
+			container1.appendChild(msg1);
+			msg1.innerHTML = this.translate("LOADING");
+
+			var container2 = document.createElement("div");
+			container2.className = "sunnyPortalContainer";
+			var graph2 = document.createElement("canvas");
+			graph2.className = "small thin light";
+			graph2.width = this.config.width;
+			graph2.height = this.config.height/2;
+			graph2.style.display = "none";
+			var msg2 = document.createElement("div");
+			msg2.className = "small bright";
+			if (includeDayIndex == 1) {//((includeDayIndex > -1) && ((includeDayIndex < includeMonthIndex) || (includeDayIndex < includeYearIndex) || (includeDayIndex < includeTotalIndex))) {
+				graph2.id = "sunnyportalDayGraph";
+				msg2.id = "msgDay";
+			} else if (includeMonthIndex == 1) {//((includeMonthIndex > -1) && ((includeMonthIndex < includeDayIndex) || (includeMonthIndex < includeYearIndex) || (includeMonthIndex < includeTotalIndex))) {
+				graph2.id = "sunnyportalMonthGraph";
+				msg2.id = "msgMonth";
+			} else if (includeYearIndex == 1) {//((includeYearIndex > -1) && ((includeYearIndex < includeDayIndex) || (includeYearIndex < includeMonthIndex) || (includeYearIndex < includeTotalIndex))) {
+				graph2.id = "sunnyportalYearGraph";
+				msg2.id = "msgYear";
+			} else {
+				graph2.id = "sunnyportalTotalGraph";
+				msg2.id = "msgTotal";
+			}
+			container2.appendChild(graph2);
+			container2.appendChild(msg2);
+			msg2.innerHTML = this.translate("LOADING");
+			container.appendChild(container1);
+			container.appendChild(container2);
+			return container;
+		} /*
+			
 */
 	  var container1 = document.createElement("div");
 	  container1.className = "sunnyPortalContainer";
