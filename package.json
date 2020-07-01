@@ -20,7 +20,6 @@
   "dependencies": {
     "chart.js": "^2.9.3",
     "flow": "^0.2.3",
-    "request": "^2.88.0"
+    "request": "^2.88.2"
   }
-
 }

@@ -16,6 +16,7 @@ Module.register("MMM-SunnyPortal",{
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	  convertUnits: true,
+	  includeGraphs: ["Month"], //Default ["all"] or define a set like: ["day", "month", "year", "total"]
 	},
 
   
@@ -168,14 +169,84 @@ Module.register("MMM-SunnyPortal",{
   
 	// Override dom generator.
 	getDom: function() {
-	
+		
+		// Create a table based on the selection in this.config.includeGraphs
+		var include = this.config.includeGraphs;
+		var includeDayIndex = -1, includeMonthIndex = -1, includeYearIndex = -1, includeTotalIndex = -1;
+		var tablesize;
+		var container = document.createElement("div");
+		
+		var container2 = document.createElement("div");
+		var container3 = document.createElement("div");
+		var container4 = document.createElement("div");
+		
+		// Get the indexes of the includeGraphs
+		if (Array.isArray(include)) {
+			tablesize = include.length; // set table to 1, 2, 3 or 4 cells
+			includeDayIndex = include.findIndex(item =>
+                "Day".toLowerCase() === item.toLowerCase());
+			includeMonthIndex = include.findIndex(item =>
+                "Month".toLowerCase() === item.toLowerCase());
+			includeYearIndex = include.findIndex(item =>
+                "Year".toLowerCase() === item.toLowerCase());
+			includeTotalIndex = include.findIndex(item =>
+                "Total".toLowerCase() === item.toLowerCase());
+		} else {
+			tablesize = 4; //default to "all" or if includeGrahps is malformed
+			includeDayIndex = 0;
+			includeMonthIndex = 1;
+			includeYearIndex = 2;
+			includeTotalIndex = 3;
+		}
+		
+		// Build the table
+		// Small table with only 1 graph.
+		if (tablesize == 1) {
+			var container1 = document.createElement("div");
+			container1.className = "sunnyPortalContainer";
+			var graph1 = document.createElement("canvas");
+			graph1.className = "small thin light";
+			graph1.width = this.config.width;
+			graph1.height = this.config.height;
+			graph1.style.display = "none";
+			if (includeDayIndex > -1) {
+				graph1.id = "sunnyportalDayGraph";
+			} else if (includeMonthIndex > -1) {
+				graph1.id = "sunnyportalMonthGraph";
+			} else if (includeYearIndex > -1) {
+				graph1.id = "sunnyportalYearGraph";
+			} else {
+				graph1.id = "sunnyportalTotalGraph";
+			}
+			graph1.width = this.config.width;
+			graph1.height = this.config.height;
+			container1.appendChild(graph1);
+			
+			var msg1 = document.createElement("div");
+			msg1.className = "small bright";
+
+			if (includeDayIndex > -1) {
+				msg1.id = "msgDay";
+			} else if (includeMonthIndex > -1) {
+				msg1.id = "msgMonth";
+			} else if (includeYearIndex > -1) {
+				msg1.id = "msgYear";
+			} else {
+				msg1.id = "msgTotal";
+			}
+			container1.appendChild(msg1);
+			msg1.innerHTML = this.translate("LOADING");
+			container.appendChild(container1);
+			return container;
+		} /*else {
+*/
 	  var container1 = document.createElement("div");
 	  container1.className = "sunnyPortalContainer";
 	  
 	  // Let's add the Day items
 	  var graphDay = document.createElement("canvas");
 	  graphDay.className = "small thin light";
-	  graphDay.id = "sunnyportalDayGraph";	  
+	  graphDay.id = "sunnyportalDayGraph";
 	  graphDay.width = this.config.width;
 	  graphDay.style.display = "none";
 	  container1.appendChild(graphDay);
@@ -236,7 +307,9 @@ Module.register("MMM-SunnyPortal",{
 	   container.appendChild(container2);
 	   container.appendChild(container3);
 
+		//}
 	  return container;
+		
 	},
   
 	/* 
@@ -246,8 +319,8 @@ Module.register("MMM-SunnyPortal",{
 	drawDayChart: function(power, times) {
 	  var graph = document.getElementById("sunnyportalDayGraph");
 	  graph.style.display = "block";
-	  graph.width = this.config.width;
-	  graph.height = this.config.height/2;
+	  //graph.width = this.config.width;
+	  //graph.height = this.config.height/2;
 	  var ctx = graph.getContext("2d");
 	  var gradient = ctx.createLinearGradient(0,150,0,0);
 	  gradient.addColorStop(0,this.config.chartcolor1);
@@ -321,8 +394,8 @@ Module.register("MMM-SunnyPortal",{
 	drawMonthChart: function(power, times) {
 		var graph = document.getElementById("sunnyportalMonthGraph");
 		graph.style.display = "block";
-		graph.width = this.config.width/2-10;
-		graph.height = this.config.height/2;
+		//graph.width = this.config.width/2-10;
+		//graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
  	    var gradient = ctx.createLinearGradient(0,150,0,0);
 	    gradient.addColorStop(0,this.config.chartcolor1);
@@ -395,8 +468,8 @@ Module.register("MMM-SunnyPortal",{
 	drawYearChart: function(power, times) {
 		var graph = document.getElementById("sunnyportalYearGraph");
 		graph.style.display = "block";
-		graph.width = this.config.width/2-10;
-		graph.height = this.config.height/2;
+		//graph.width = this.config.width/2-10;
+		//graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
 		var gradient = ctx.createLinearGradient(0,150,0,0);
 		gradient.addColorStop(0,this.config.chartcolor1);
@@ -475,8 +548,8 @@ Module.register("MMM-SunnyPortal",{
 	drawTotalChart: function(power, times) {
 		var graph = document.getElementById("sunnyportalTotalGraph");
 		graph.style.display = "block";
-		graph.width = this.config.width;
-		graph.height = this.config.height/2;
+		//graph.width = this.config.width;
+		//graph.height = this.config.height/2;
 		var ctx = graph.getContext("2d");
 		var gradient = ctx.createLinearGradient(0,150,0,0);
 		gradient.addColorStop(0,this.config.chartcolor1);
