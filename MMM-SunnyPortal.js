@@ -203,8 +203,8 @@ Module.register("MMM-SunnyPortal",{
 			container1.style.width = this.config.width + "px";
 			var graph1 = document.createElement("canvas");
 			graph1.className = "small thin light";
-			graph1.width = this.config.width + "px";
-			graph1.height = this.config.height - 30 + "px";
+			graph1.style.width = this.config.width + "px";
+			graph1.style.height = this.config.height - 30 + "px";
 			graph1.style.display = "none";
 			var msg1 = document.createElement("div");
 			msg1.className = "small bright";
