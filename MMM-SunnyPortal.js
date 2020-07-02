@@ -16,7 +16,7 @@ Module.register("MMM-SunnyPortal",{
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	  convertUnits: true,
-	  includeGraphs: ["Year", "Month"], //Default ["all"] or define a set like: ["day", "month", "year", "total"]
+	  includeGraphs: ["All"], //Default ["all"] or define a set like: ["day", "month", "year", "total"]
 	},
 
   
@@ -170,18 +170,13 @@ Module.register("MMM-SunnyPortal",{
 	// Override dom generator.
 	getDom: function() {
 		
-		// Create a table based on the selection in this.config.includeGraphs
+		// Create a div table based on the selection in this.config.includeGraphs
 		var include = this.config.includeGraphs;
 		var includeDayIndex = -1, includeMonthIndex = -1, includeYearIndex = -1, includeTotalIndex = -1;
 		var tablesize;
-		var container = document.createElement("div");
-		
-		var container2 = document.createElement("div");
-		var container3 = document.createElement("div");
-		var container4 = document.createElement("div");
-		
+
 		// Get the indexes of the includeGraphs
-		if (Array.isArray(include)) {
+		if ((Array.isArray(include)) && (include.length <= 4) && (include[0].toLowerCase() !== "all")) {
 			tablesize = include.length; // set table to 1, 2, 3 or 4 cells
 			includeDayIndex = include.findIndex(item =>
                 "Day".toLowerCase() === item.toLowerCase());
@@ -200,23 +195,28 @@ Module.register("MMM-SunnyPortal",{
 		}
 		
 		// Build the table
+		var container = document.createElement("div");
+
 		if (tablesize == 1) { // Table with 1 graph
 			var container1 = document.createElement("div");
 			container1.className = "sunnyPortalContainer";
+			container1.style.width = this.config.width + "px";
 			var graph1 = document.createElement("canvas");
 			graph1.className = "small thin light";
-			graph1.width = this.config.width;
-			graph1.height = this.config.height;
+			graph1.width = this.config.width + "px";
+			graph1.height = this.config.height - 30 + "px";
 			graph1.style.display = "none";
 			var msg1 = document.createElement("div");
 			msg1.className = "small bright";
-			if (includeDayIndex > -1) {
+			msg1.style.width = this.config.width + "px";
+			msg1.style.height = 30 + "px";
+			if (includeDayIndex == 0) {
 				graph1.id = "sunnyportalDayGraph";
 				msg1.id = "msgDay";
-			} else if (includeMonthIndex > -1) {
+			} else if (includeMonthIndex == 0) {
 				graph1.id = "sunnyportalMonthGraph";
 				msg1.id = "msgMonth";
-			} else if (includeYearIndex > -1) {
+			} else if (includeYearIndex == 0) {
 				graph1.id = "sunnyportalYearGraph";
 				msg1.id = "msgYear";
 			} else {
@@ -231,20 +231,22 @@ Module.register("MMM-SunnyPortal",{
 		} else if (tablesize == 2) { // Table with 2 graphs
 			var container1 = document.createElement("div");
 			container1.className = "sunnyPortalContainer";
+			container1.style.width = this.config.width + "px";
 			var graph1 = document.createElement("canvas");
 			graph1.className = "small thin light";
-			graph1.width = this.config.width;
-			graph1.height = this.config.height/2;
+			graph1.style.width = this.config.width + "px";
+			graph1.style.height = this.config.height / 2 - 60 + "px";
 			graph1.style.display = "none";
 			var msg1 = document.createElement("div");
 			msg1.className = "small bright";
-			if (includeDayIndex == 0) {//((includeDayIndex > -1) && ((includeDayIndex < includeMonthIndex) || (includeDayIndex < includeYearIndex) || (includeDayIndex < includeTotalIndex))) {
+			msg1.style.height = 30 + "px";
+			if (includeDayIndex == 0) {
 				graph1.id = "sunnyportalDayGraph";
 				msg1.id = "msgDay";
-			} else if (includeMonthIndex == 0) {//((includeMonthIndex > -1) && ((includeMonthIndex < includeDayIndex) || (includeMonthIndex < includeYearIndex) || (includeMonthIndex < includeTotalIndex))) {
+			} else if (includeMonthIndex == 0) {
 				graph1.id = "sunnyportalMonthGraph";
 				msg1.id = "msgMonth";
-			} else if (includeYearIndex == 0) {//((includeYearIndex > -1) && ((includeYearIndex < includeDayIndex) || (includeYearIndex < includeMonthIndex) || (includeYearIndex < includeTotalIndex))) {
+			} else if (includeYearIndex == 0) {
 				graph1.id = "sunnyportalYearGraph";
 				msg1.id = "msgYear";
 			} else {
@@ -257,20 +259,22 @@ Module.register("MMM-SunnyPortal",{
 
 			var container2 = document.createElement("div");
 			container2.className = "sunnyPortalContainer";
+			container2.style.width = this.config.width + "px";
 			var graph2 = document.createElement("canvas");
 			graph2.className = "small thin light";
-			graph2.width = this.config.width;
-			graph2.height = this.config.height/2;
+			graph2.width = this.config.width + "px";
+			graph2.height = this.config.height / 2 - 60 + "px";
 			graph2.style.display = "none";
 			var msg2 = document.createElement("div");
 			msg2.className = "small bright";
-			if (includeDayIndex == 1) {//((includeDayIndex > -1) && ((includeDayIndex < includeMonthIndex) || (includeDayIndex < includeYearIndex) || (includeDayIndex < includeTotalIndex))) {
+			msg2.style.height = 30 + "px";
+			if (includeDayIndex == 1) {
 				graph2.id = "sunnyportalDayGraph";
 				msg2.id = "msgDay";
-			} else if (includeMonthIndex == 1) {//((includeMonthIndex > -1) && ((includeMonthIndex < includeDayIndex) || (includeMonthIndex < includeYearIndex) || (includeMonthIndex < includeTotalIndex))) {
+			} else if (includeMonthIndex == 1) {
 				graph2.id = "sunnyportalMonthGraph";
 				msg2.id = "msgMonth";
-			} else if (includeYearIndex == 1) {//((includeYearIndex > -1) && ((includeYearIndex < includeDayIndex) || (includeYearIndex < includeMonthIndex) || (includeYearIndex < includeTotalIndex))) {
+			} else if (includeYearIndex == 1) {
 				graph2.id = "sunnyportalYearGraph";
 				msg2.id = "msgYear";
 			} else {
@@ -283,79 +287,235 @@ Module.register("MMM-SunnyPortal",{
 			container.appendChild(container1);
 			container.appendChild(container2);
 			return container;
-		} /*
+		} else if (tablesize == 3) { // Table with 3 graphs
+			var container1 = document.createElement("div");
+			container1.className = "sunnyPortalContainer";
+			container1.style.width = this.config.width + "px";
 			
-*/
-	  var container1 = document.createElement("div");
-	  container1.className = "sunnyPortalContainer";
-	  
-	  // Let's add the Day items
-	  var graphDay = document.createElement("canvas");
-	  graphDay.className = "small thin light";
-	  graphDay.id = "sunnyportalDayGraph";
-	  graphDay.width = this.config.width;
-	  graphDay.style.display = "none";
-	  container1.appendChild(graphDay);
-	  var msgDay = document.createElement("div");
-	  msgDay.id = "msgDay";
-	  msgDay.className = "small bright";
-	  container1.appendChild(msgDay);
-	  msgDay.innerHTML = this.translate("LOADING");
+			var graph1 = document.createElement("canvas");
+			graph1.className = "small thin light";
+			graph1.style.width = this.config.width + "px";
+			graph1.style.height = this.config.height / 2 - 60 + "px";
+			graph1.style.display = "none";
+			var msg1 = document.createElement("div");
+			msg1.className = "small bright";
+			msg1.style.width = this.config.width + "px";
+			msg1.style.height = 30 + "px";
+			if (includeDayIndex == 0) {
+				graph1.id = "sunnyportalDayGraph";
+				msg1.id = "msgDay";
+			} else if (includeMonthIndex == 0) {
+				graph1.id = "sunnyportalMonthGraph";
+				msg1.id = "msgMonth";
+			} else if (includeYearIndex == 0) {
+				graph1.id = "sunnyportalYearGraph";
+				msg1.id = "msgYear";
+			} else {
+				graph1.id = "sunnyportalTotalGraph";
+				msg1.id = "msgTotal";
+			}
+			container1.appendChild(graph1);
+			container1.appendChild(msg1);
+			msg1.innerHTML = this.translate("LOADING");
 
-	  var container2 = document.createElement("div");
-	  container2.className = "sunnyPortalContainer";
+			var container2 = document.createElement("div");
+			container2.className = "sunnyPortalContainer";
+			container2.style.width = this.config.width + "px";
+			
+			var graph2 = document.createElement("canvas");
+			graph2.className = "small thin light";
+			graph2.style.width = this.config.width / 2 + "px";
+			graph2.style.height = this.config.height / 2 - 60 + "px";
+			graph2.style.display = "none";
+			graph2.style.cssFloat = "left";
+			
+			var graph3 = document.createElement("canvas");
+			graph3.className = "small thin light";
+			graph3.style.width = this.config.width / 2 + "px";
+			graph3.style.height = this.config.height / 2 - 60 + "px";
+			graph3.style.display = "none";
+			graph3.style.cssFloat = "right";
 
-	  // Let's add the Month items
-	  var graphMonth = document.createElement("canvas");
-	  graphMonth.className = "small thin light";
-	  graphMonth.id = "sunnyportalMonthGraph";	  
-	  graphMonth.width = this.config.width;
-	  graphMonth.style.display = "none";
-	  container2.appendChild(graphMonth);	  
-	  
-	  
-	   // Let's add the Year items
-	   var graphYear = document.createElement("canvas");
-	   graphYear.className = "small thin light";
-	   graphYear.id = "sunnyportalYearGraph";	  
-	   graphYear.width = this.config.width;
-	   graphYear.style.display = "none";
-	   container2.appendChild(graphYear);
+			var msg2 = document.createElement("div");
+			msg2.className = "small bright";
+			msg2.style.cssFloat = "left";
+			msg2.style.width = this.config.width / 2 + "px";
+			msg2.style.height = 30 + "px";
 
-	   var msgMonth = document.createElement("div");
-	   msgMonth.id = "msgMonth";
-	   msgMonth.className = "small bright";	   
-	   container2.appendChild(msgMonth);
-	   msgMonth.innerHTML = this.translate("LOADING");
-	   var msgYear = document.createElement("div");
-	   msgYear.id = "msgYear";
-	   msgYear.className = "small bright";
-	   container2.appendChild(msgYear);
-	   msgYear.innerHTML = this.translate("LOADING");
+			if (includeDayIndex == 1) {
+				graph2.id = "sunnyportalDayGraph";
+				msg2.id = "msgDay";
+			} else if (includeMonthIndex == 1) {
+				graph2.id = "sunnyportalMonthGraph";
+				msg2.id = "msgMonth";
+			} else if (includeYearIndex == 1) {
+				graph2.id = "sunnyportalYearGraph";
+				msg2.id = "msgYear";
+			} else {
+				graph2.id = "sunnyportalTotalGraph";
+				msg2.id = "msgTotal";
+			}
 
-	  var container3 = document.createElement("div");
-	  container3.className = "sunnyPortalContainer";
+			var msg3 = document.createElement("div");
+			msg3.className = "small bright";
+			msg3.style.cssFloat = "right";
+			msg3.style.width = this.config.width / 2 + "px";
+			msg3.style.height = 30 + "px";
 
-	  var graphTotal = document.createElement("canvas");
-	  graphTotal.className = "small thin light";
-	  graphTotal.id = "sunnyportalTotalGraph";
-	  graphTotal.width = this.config.width;
-	  graphTotal.style.display = "none";
-	  container3.appendChild(graphTotal);
-	  var msgTotal = document.createElement("div");
-	  msgTotal.id = "msgTotal";
-	  msgTotal.className = "small bright";
-	  container3.appendChild(msgTotal);
-	  msgTotal.innerHTML = this.translate("LOADING");
+			if (includeDayIndex == 2) {
+				graph3.id = "sunnyportalDayGraph";
+				msg3.id = "msgDay";
+			} else if (includeMonthIndex == 2) {
+				graph3.id = "sunnyportalMonthGraph";
+				msg3.id = "msgMonth";
+			} else if (includeYearIndex == 2) {
+				graph3.id = "sunnyportalYearGraph";
+				msg3.id = "msgYear";
+			} else {
+				graph3.id = "sunnyportalTotalGraph";
+				msg3.id = "msgTotal";
+			}
+			container2.appendChild(graph2);
+			container2.appendChild(graph3);
+			container2.appendChild(msg2);
+			container2.appendChild(msg3);
+			msg2.innerHTML = this.translate("LOADING");
+			msg3.innerHTML = this.translate("LOADING");
+			container.appendChild(container1);
+			container.appendChild(container2);
+			return container;
+		} else { // Table with 4 graphs
+			var container1 = document.createElement("div");
+			container1.className = "sunnyPortalContainer";
+			container1.style.width = this.config.width + "px";
+			
+			var graph1 = document.createElement("canvas");
+			graph1.className = "small thin light";
+			graph1.style.width = this.config.width / 2 + "px";
+			graph1.style.height = this.config.height / 2 - 60 + "px";
+			graph1.style.display = "none";
+			graph1.style.cssFloat = "left";
 
-	   var container = document.createElement("div");
-	   container.appendChild(container1);
-	   container.appendChild(container2);
-	   container.appendChild(container3);
+			var graph2 = document.createElement("canvas");
+			graph2.className = "small thin light";
+			graph2.style.width = this.config.width / 2 + "px";
+			graph2.style.height = this.config.height / 2 - 60 + "px";
+			graph2.style.display = "none";
+			graph2.style.cssFloat = "right";
 
-		//}
-	  return container;
-		
+			var msg1 = document.createElement("div");
+			msg1.className = "small bright";
+			msg1.style.cssFloat = "left";
+			msg1.style.width = this.config.width / 2 + "px";
+			msg1.style.height = 30 +"px";
+
+			if (includeDayIndex == 0) {
+				graph1.id = "sunnyportalDayGraph";
+				msg1.id = "msgDay";
+			} else if (includeMonthIndex == 0) {
+				graph1.id = "sunnyportalMonthGraph";
+				msg1.id = "msgMonth";
+			} else if (includeYearIndex == 0) {
+				graph1.id = "sunnyportalYearGraph";
+				msg1.id = "msgYear";
+			} else {
+				graph1.id = "sunnyportalTotalGraph";
+				msg1.id = "msgTotal";
+			}
+
+			var msg2 = document.createElement("div");
+			msg2.className = "small bright";
+			msg2.style.cssFloat = "right";
+			msg2.style.width = this.config.width / 2 + "px";
+			msg2.style.height = 30 + "px";
+			
+			if (includeDayIndex == 1) {
+				graph2.id = "sunnyportalDayGraph";
+				msg2.id = "msgDay";
+			} else if (includeMonthIndex == 1) {
+				graph2.id = "sunnyportalMonthGraph";
+				msg2.id = "msgMonth";
+			} else if (includeYearIndex == 1) {
+				graph2.id = "sunnyportalYearGraph";
+				msg2.id = "msgYear";
+			} else {
+				graph2.id = "sunnyportalTotalGraph";
+				msg2.id = "msgTotal";
+			}
+			container1.appendChild(graph1);
+			container1.appendChild(graph2);
+			container1.appendChild(msg1);
+			msg1.innerHTML = this.translate("LOADING");
+			container1.appendChild(msg2);
+			msg2.innerHTML = this.translate("LOADING");
+
+			var container2 = document.createElement("div");
+			container2.className = "sunnyPortalContainer";
+			container2.style.width = this.config.width + "px";
+			
+			var graph3 = document.createElement("canvas");
+			graph3.className = "small thin light";
+			graph3.style.width = this.config.width / 2 + "px";
+			graph3.style.height = this.config.height / 2 - 60 + "px";
+			graph3.style.display = "none";
+			graph3.style.cssFloat = "left";
+
+			var graph4 = document.createElement("canvas");
+			graph4.className = "small thin light";
+			graph4.style.width = this.config.width / 2 + "px";
+			graph4.style.height = this.config.height / 2 - 60 + "px";
+			graph4.style.display = "none";
+			graph4.style.cssFloat = "right";
+
+			var msg3 = document.createElement("div");
+			msg3.className = "small bright";
+			msg3.style.cssFloat = "left";
+			msg3.style.width = this.config.width / 2 + "px";
+			msg3.style.height = 30 + "px";
+			
+			if (includeDayIndex == 2) {
+				graph3.id = "sunnyportalDayGraph";
+				msg3.id = "msgDay";
+			} else if (includeMonthIndex == 2) {
+				graph3.id = "sunnyportalMonthGraph";
+				msg3.id = "msgMonth";
+			} else if (includeYearIndex == 2) {
+				graph3.id = "sunnyportalYearGraph";
+				msg3.id = "msgYear";
+			} else {
+				graph3.id = "sunnyportalTotalGraph";
+				msg3.id = "msgTotal";
+			}
+
+			var msg4 = document.createElement("div");
+			msg4.className = "small bright";
+			msg4.style.cssFloat = "right";
+			msg4.style.width = this.config.width / 2 + "px";
+			msg4.style.height = 30 + "px";
+
+			if (includeDayIndex == 3) {
+				graph4.id = "sunnyportalDayGraph";
+				msg4.id = "msgDay";
+			} else if (includeMonthIndex == 3) {
+				graph4.id = "sunnyportalMonthGraph";
+				msg4.id = "msgMonth";
+			} else if (includeYearIndex == 3) {
+				graph4.id = "sunnyportalYearGraph";
+				msg4.id = "msgYear";
+			} else {
+				graph4.id = "sunnyportalTotalGraph";
+				msg4.id = "msgTotal";
+			}
+			container2.appendChild(graph3);
+			container2.appendChild(graph4);
+			container2.appendChild(msg3);
+			container2.appendChild(msg4);
+			msg3.innerHTML = this.translate("LOADING");
+			msg4.innerHTML = this.translate("LOADING");
+			container.appendChild(container1);
+			container.appendChild(container2);
+			return container;
+		}
 	},
   
 	/* 
