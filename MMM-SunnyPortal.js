@@ -16,7 +16,7 @@ Module.register("MMM-SunnyPortal",{
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	  convertUnits: true,
-	  includeGraphs: ["All"], //Default ["all"] or define a set like: ["day", "month", "year", "total"]
+	  includeGraphs: ["All"], //Default ["all"] (uses default order) or define an array with 1-4 elements like: ["day", "month", "year", "total"]
 	},
 
   
@@ -239,6 +239,7 @@ Module.register("MMM-SunnyPortal",{
 			graph1.style.display = "none";
 			var msg1 = document.createElement("div");
 			msg1.className = "small bright";
+			msg1.style.width = this.config.width + "px";
 			msg1.style.height = 30 + "px";
 			if (includeDayIndex == 0) {
 				graph1.id = "sunnyportalDayGraph";
@@ -262,11 +263,12 @@ Module.register("MMM-SunnyPortal",{
 			container2.style.width = this.config.width + "px";
 			var graph2 = document.createElement("canvas");
 			graph2.className = "small thin light";
-			graph2.width = this.config.width + "px";
-			graph2.height = this.config.height / 2 - 60 + "px";
+			graph2.style.width = this.config.width + "px";
+			graph2.style.height = this.config.height / 2 - 60 + "px";
 			graph2.style.display = "none";
 			var msg2 = document.createElement("div");
 			msg2.className = "small bright";
+			msg2.style.width = this.config.width + "px";
 			msg2.style.height = 30 + "px";
 			if (includeDayIndex == 1) {
 				graph2.id = "sunnyportalDayGraph";
