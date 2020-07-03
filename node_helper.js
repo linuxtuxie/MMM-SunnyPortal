@@ -1,3 +1,12 @@
+/*
+ *
+ * MMM-Sunnyportal
+ *
+ * Author: linuxtuxie
+ * MIT Licensed.
+ *
+ */
+
 var NodeHelper = require('node_helper');
 var request = require('request');
 var flow = require('flow');

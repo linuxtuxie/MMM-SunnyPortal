@@ -1,7 +1,11 @@
 /* Magic Mirror
  * Module: MMM-SunnyPortal
  * Displays scalable chart.js graphs representing the current, monthly and yearly power output of SunnyPortal solar panels
-*/
+ *
+ * Author: linuxtuxie
+ * MIT Licensed.
+ *
+ */
 
 Module.register("MMM-SunnyPortal",{
 	// Default module config.
@@ -10,13 +14,13 @@ Module.register("MMM-SunnyPortal",{
 	  updateInterval: 900,
 	  width: 500,
 	  height: 400,
-	  username : '',
-	  password : '',
+	  username : '',  //Required!
+	  password : '',  //Required!
 	  plantOID : '',
 	  chartcolor1: '#121212',
 	  chartcolor2: '#909090',
 	  convertUnits: true,
-	  includeGraphs: ["All"], //Default ["all"] (uses default order) or define an array with 1-4 elements like: ["day", "month", "year", "total"]
+	  includeGraphs: ['all'], //Default ['all'] (uses default order) or define an array with 1-4 elements like: ['day', 'month', 'year', 'total']
 	},
 
   

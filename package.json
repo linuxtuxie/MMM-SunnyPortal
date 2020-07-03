@@ -1,6 +1,6 @@
 {
   "name": "mmm-sunnyportal",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Display your SunnyPortal Solar Panel output",
   "main": "MMM-SunnyPortal.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "keywords": [],
   "author": "linuxtuxie",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/linuxtuxie/MMM-SunnyPortal/issues"
   },
