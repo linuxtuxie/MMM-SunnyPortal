@@ -4,7 +4,7 @@ Display your SunnyPortal Solar Panel Inverter output
 
 | Status | Version | Date | 
 |:------- |:------- |:---- |
-| Working | 1.0.0 | 2020-01-28 |
+| Working | 1.1.0 | 2020-07-04 |
 
 #### What is this module doing?
 
@@ -74,7 +74,7 @@ To configure the SunnyPortal module, you need to do the following:
 4. [optional] Add your own language translation file in the translations folder (currently english, dutch and french are provided)
 
 
-Add the module to the modules array in the `config/config.js` file by adding the following section. 
+Add this module to the modules array in the `config/config.js` file by adding the following example section.<br>You must include you SunnyPortal Username and Password, you can edit the config to include any of the configuration options descibed below. 
 
 ```javascript
 {
@@ -84,8 +84,8 @@ Add the module to the modules array in the `config/config.js` file by adding the
     config: {
     	url: 'https://www.sunnyportal.com',
         updateInterval: 900,
-        username: '',
-        password: '',
+        username: '',             //Required: Your Sunnyportal Username
+        password: '',             //Required: Your Sunnyportal Password
         width: 500,
         height: 400,
         chartcolor1: '#121212',
@@ -102,18 +102,18 @@ Add the module to the modules array in the `config/config.js` file by adding the
 
 | Option            | Description  |
 |:----------------- |:------------ | 
-| url               | The SunnyPortal website's URL<br>*Optional*<br>*Default value:* https://www.sunnyportal.com |
+| url               | An alternative URL to the SunnyPortal website<br>*Optional*<br>*Default value:* https://www.sunnyportal.com |
 | updateInterval    | Module data update rate [in seconds]<br>*Optional*<br>*Default and minimum value:* `900` (a lower value is ignored)|
 | username          | Your Sunnyportal `Username`<br>**Required** |
-| password          | Your SunnyPortal `Password`<br>**Required**  |
+| password          | Your SunnyPortal `Password`<br>**Required** |
 | width             | The width of the module<br>*Optional*<br>*Default value:* `500` |
 | height            | The height of the module<br>*Optional*<br>*Default value:* `400` |
-| chartcolor1:<br>chartcolor2: | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.<br>Set both to the same color code to have a solid graph witout a gradient.<br>*Optional, example values:* `"red"`, `"#FF00FF"`, `"rgb(255,255,255)"`<br>*Default values:* chartcolor1: '#121212', chartcolor2: '#909090' |
+| chartcolor1:<br>chartcolor2: | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.<br>Set both to the same color code to have a solid graph without a gradient.<br>*Optional, example values:* `"red"`, `"#FF00FF"`, `"rgb(255,255,255)"`<br>*Default values:* chartcolor1: `"#121212"`, chartcolor2: `"#909090"` |
 | convertUnits      | Convert kwH to MWh if needed<br>*Optional, possible values:* `true`, `false`<br>*Default value:* `true`<br> |
-| includeGraphs     | An Array with all the graphs you want included. Only takes an array, use ["All"], or an array with 1, 2, 3 or 4 elements<br>*Default* `["All"]` displays all 4 graphs in the order Day,Month,Year,Total.<br>But as an example: `["Month", "Day"]` displays just that 2 graphs in the specifier order<br>*Possible values:* `["all"]` or any combination of `["day", "month", "year", "total"]` (case insensitive)|
+| includeGraphs     | Takes an array with the graphs you want included.<br>The array can have 1, 2, 3 or 4 elements<br>Using `["All"]` is equal to `["Day", "Month", "Year", "Total"]`<br>*Default* `["All"]`<br>As an example: `["Month", "Day"]` displays just that 2 graphs in the specifier order<br>*Possible values:* `["all"]` or any combination of `["day", "month", "year", "total"]` (case insensitive)|
 
-> :warning: Please do not try to edit the module files to use an **updateInterval** shorter than 15 minutes (900 seconds).
-> A lower setting can lockout your account on the SunnyPortal. The power output on SMA SunnyPortal is always
+> :warning: Please do not edit the module files to use an **updateInterval** shorter than 15 minutes (900 seconds).
+> A lower setting can lockout your account on the SunnyPortal URL. The power output on SMA SunnyPortal is always
 > calculated in a time interval of 15 minutes...so there is no need to update in a shorter time interval!
 > There is a check to have a minimum value of 900 seconds. Any lower value is ignored.
 
