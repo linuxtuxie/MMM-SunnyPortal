@@ -80,19 +80,18 @@ Add the module to the modules array in the `config/config.js` file by adding the
 {
     module: 'MMM-SunnyPortal',
     position: 'bottom_left',
-    header: 'Solar Panels',                     // The header text above the module. Use: "" to remove.
+    header: 'Solar Panels',
     config: {
-        url: 'https://www.sunnyportal.com',     // The SunnyPortal website's URL
-        updateInterval: 900,                    // How many times do we update the graphs? 
-                                                // 15 Minutes (900 seconds) is ideal and also kept as a minimum to prevent lockout on the SunnyPortal!
-        username: '',                           // Username for logging into https://www.sunnyportal.com/
-        password: '',                           // Password for logging into https://www.sunnyportal.com/
-        width: 500,                             // The total width of the module
-        height: 400,                            // The total height of the module
-        chartcolor1: '#121212',                 // The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.
-        chartcolor2: '#909090',                 // Set both to the same color code to have a solid graph witout a gradient.
-        convertUnits: true,                     // Convert kwH to MWh if needed (when kWh value > 1000)
-		includeGraphs: ["All"],                 // Default ["all"] uses default order, or define an array with 1-4 elements like: ["day", "month", "year", "total"]
+    	url: 'https://www.sunnyportal.com',
+        updateInterval: 900,
+        username: '',
+        password: '',
+        width: 500,
+        height: 400,
+        chartcolor1: '#121212',
+        chartcolor2: '#909090',
+        convertUnits: true,
+        includeGraphs: ["All"],
     }
 },
 ```
@@ -109,10 +108,9 @@ Add the module to the modules array in the `config/config.js` file by adding the
 | password          | ''                            | **Required** Password for logging into url |
 | width             | `500`                         | The width of the module |
 | height            | `400`                         | The height of the module |
-| chartcolor1:      | '#121212',                    | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.
-| chartcolor2:      | '#909090',                    | Set both to the same color code to have a solid graph witout a gradient.
+| chartcolor1:<br>chartcolor2: | '#121212',<br>'#909090', | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.<br>Set both to the same color code to have a solid graph witout a gradient. |
 | convertUnits      | `true`                        | Convert kwH to MWh if needed<br>*Possible values:* `true`, `false`|
-| includeGraphs     | `["All"]`                     | Takes an array, use ["All"], or an array with 1-4 elements<br>Default `["All"]` displays all 4 graphs in the order Day,Monthe,year,Total.<br>But as an example: `["Monthe", "Day"]` displays just that 2 graphs in the specifier order<br>*Possible values:* `["all"]` or `["day", "month", "year", "total"]` (case insensitive)
+| includeGraphs     | `["All"]`                     | Takes an array, use ["All"], or an array with 1-4 elements<br>Default `["All"]` displays all 4 graphs in the order Day,Monthe,year,Total.<br>But as an example: `["Month", "Day"]` displays just that 2 graphs in the specifier order<br>*Possible values:* `["all"]` or `["day", "month", "year", "total"]` (case insensitive)|
 
 > :warning: Please do not try to edit the module files to use an **updateInterval** shorter than 15 minutes (900 seconds).
 > A lower setting can lockout your account on the SunnyPortal. The power output on SMA SunnyPortal is always
