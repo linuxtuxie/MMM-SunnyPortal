@@ -100,17 +100,17 @@ Add the module to the modules array in the `config/config.js` file by adding the
 
 #### Configuration Options 
 
-| Option            | Default                       | Description  |
-|:----------------- |:----------------------------- |:------------ | 
-| url               | https://www.sunnyportal.com   | The SunnyPortal website's URL |
-| updateInterval    | `900`                         | Module data update rate [in seconds]<br>*Minimum value:* `900` (a lower value is ignored)|
-| username          | ''                            | **Required** Username for logging into url |
-| password          | ''                            | **Required** Password for logging into url |
-| width             | `500`                         | The width of the module |
-| height            | `400`                         | The height of the module |
-| chartcolor1:<br>chartcolor2: | '#121212',<br>'#909090', | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.<br>Set both to the same color code to have a solid graph witout a gradient. |
-| convertUnits      | `true`                        | Convert kwH to MWh if needed<br>*Possible values:* `true`, `false`|
-| includeGraphs     | `["All"]`                     | Takes an array, use ["All"], or an array with 1-4 elements<br>Default `["All"]` displays all 4 graphs in the order Day,Monthe,year,Total.<br>But as an example: `["Month", "Day"]` displays just that 2 graphs in the specifier order<br>*Possible values:* `["all"]` or `["day", "month", "year", "total"]` (case insensitive)|
+| Option            | Description  |
+|:----------------- |:------------ | 
+| url               | The SunnyPortal website's URL<br>*Optional*<br>*Default value:* https://www.sunnyportal.com |
+| updateInterval    | Module data update rate [in seconds]<br>*Optional*<br>*Default and minimum value:* `900` (a lower value is ignored)|
+| username          | Your Sunnyportal `Username`<br>**Required** |
+| password          | Your SunnyPortal `Password`<br>**Required**  |
+| width             | The width of the module<br>*Optional*<br>*Default value:* `500` |
+| height            | The height of the module<br>*Optional*<br>*Default value:* `400` |
+| chartcolor1:<br>chartcolor2: | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.<br>Set both to the same color code to have a solid graph witout a gradient.<br>*Optional, example values:* `"red"`, `"#FF00FF"`, `"rgb(255,255,255)"`<br>*Default values:* chartcolor1: '#121212', chartcolor2: '#909090' |
+| convertUnits      | Convert kwH to MWh if needed<br>*Optional, possible values:* `true`, `false`<br>*Default value:* `true`<br> |
+| includeGraphs     | An Array with all the graphs you want included. Only takes an array, use ["All"], or an array with 1, 2, 3 or 4 elements<br>*Default* `["All"]` displays all 4 graphs in the order Day,Month,Year,Total.<br>But as an example: `["Month", "Day"]` displays just that 2 graphs in the specifier order<br>*Possible values:* `["all"]` or any combination of `["day", "month", "year", "total"]` (case insensitive)|
 
 > :warning: Please do not try to edit the module files to use an **updateInterval** shorter than 15 minutes (900 seconds).
 > A lower setting can lockout your account on the SunnyPortal. The power output on SMA SunnyPortal is always
