@@ -54,7 +54,8 @@ Module.register("MMM-SunnyPortal",{
 		updateInterval: refresh,
 		url: this.config.url,
 		username: this.config.username,
-		password: this.config.password
+		password: this.config.password,
+		includeGraphs: this.config.includeGraphs
 	  });
 	},
 

@@ -363,32 +363,60 @@ module.exports = NodeHelper.create({
         // for each new client connection/instance.
 		var self = this;
 
-		function startup(payload) {
-				var sunnyPortal = new SunnyPortal(payload);
+		var include = payload.includeGraphs;
+		var includeDayIndex, includeMonthIndex, includeYearIndex, includeTotalIndex;
+		// Get the indexes of the includeGraphs
+		if ((Array.isArray(include)) && (include.length <= 4) && (include[0].toLowerCase() !== "all")) {
+			includeDayIndex = include.findIndex(item =>
+				"Day".toLowerCase() === item.toLowerCase());
+			includeMonthIndex = include.findIndex(item =>
+				"Month".toLowerCase() === item.toLowerCase());
+			includeYearIndex = include.findIndex(item =>
+				"Year".toLowerCase() === item.toLowerCase());
+			includeTotalIndex = include.findIndex(item =>
+				"Total".toLowerCase() === item.toLowerCase());
+			if (includeTotalIndex !== -1) self.processTotalData(self);
+		} else {
+			includeDayIndex = 0;
+			includeMonthIndex = 1;
+			includeYearIndex = 2;
+			includeTotalIndex = 3;
+		}
 
-				var now = new Date();
-				var month = now.getMonth()+1;
-				var day = now.getDate();
-				var year = now.getFullYear();
+		function startup(payload) {
+			var sunnyPortal = new SunnyPortal(payload);
+
+			var now = new Date();
+			var month = now.getMonth()+1;
+			var day = now.getDate();
+			var year = now.getFullYear();
+			if (includeDayIndex !== -1) {
 				sunnyPortal.historicalProduction('day', month, day, year, function(err, data) {
 					self.dayData = data;
 					self.processDayData(self);
 				});
+				}
 
+			if (includeMonthIndex !== -1) {
 				sunnyPortal.historicalProduction('month', month, day, year, function(err, data) {
 					self.monthData = data;
 					self.processMonthData(self);
 				});
+			}
 
+			if (includeYearIndex !== -1) {
 				sunnyPortal.historicalProduction('year', month, day, year, function(err, data) {
 					self.yearData = data;
 					self.processYearData(self);
 				});
+			}
 
+			if (includeTotalIndex !== -1) {
 				sunnyPortal.historicalProduction('total', month, day, year, function(err, data) {
 					self.totalData = data;
 					self.processTotalData(self);
 				});
+			}
 		}
 
 		if (notification === "START_SUNNYPORTAL" && this.started == false) {				
@@ -398,10 +426,10 @@ module.exports = NodeHelper.create({
 			self.started = true;
 		} else if (notification === "START_SUNNYPORTAL" && this.started == true) {
 			console.log("SocketNotification START_SUNNYPORTAL received");
-			self.processDayData(self);
-			self.processMonthData(self);
-			self.processYearData(self);
-			self.processTotalData(self);
+			if (includeDayIndex !== -1) self.processDayData(self);
+			if (includeMonthIndex !== -1) self.processMonthData(self);
+			if (includeYearIndex !== -1) self.processYearData(self);
+			if (includeTotalIndex !== -1) self.processTotalData(self);
 		}
   },
 
