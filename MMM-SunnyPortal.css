@@ -1,58 +1,8 @@
-/*.MMM-SunnyPortal .sunnyportalWrapper {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-}
-
-.sunnyPortalContainer { 
-//	width: 500px; 
-}
-
-#sunnyportalDayGraph { 
-//	width: 500px; 
-//	height: 200px;
-//	margin-bottom: 5px;
-}
-  
-#msgDay { 
-//	width: 500px; 
-//	height: 20px;
-//	margin-bottom: 5px;
-}
-  
-#sunnyportalMonthGraph { 
-//	float: left; 
-//	width: 245px; 
-//	height: 200px;
-//	margin-right: 5px;
-}
-  
-#msgMonth { 
-//	float: left; 
-//	width: 245px; 
-//	height: 10px;
-//	margin-right: 5px;
-//	margin-bottom: 15px;
-}	
-  
-#sunnyportalYearGraph { 
-//	float: right; 
-//	width: 250px;
-//	height: 200px;		
-} 
-  
-#msgYear { 
-//	float: right; 
-//	width: 250px;
-//	height: 10px;	
-//	margin-bottom: 15px;
-}
-
-.sunnyPortalContainer canvas {
-//  border: 1px solid white;
-}
-
-.sunnyPortalContainer div {
-//  border: 1px solid green;
-}
-*/
+/*
+ *
+ * MMM-Sunnyportal
+ *
+ * Author: linuxtuxie
+ * MIT Licensed.
+ *
+ */
