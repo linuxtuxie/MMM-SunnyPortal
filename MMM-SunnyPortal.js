@@ -3,6 +3,7 @@
  * Displays scalable chart.js graphs representing the current, monthly and yearly power output of SunnyPortal solar panels
  *
  * Author: linuxtuxie
+ * Based upon original Sunnyportal API: https://github.com/mkorthuis/sunnyportal-api
  * MIT Licensed.
  *
  */
