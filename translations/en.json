@@ -3,5 +3,6 @@
   "NODATA": "No data!",
   "DAYOUTPUT": "Day output: ",
   "MONTHOUTPUT": "Month output: ",
-  "YEAROUTPUT": "Year output: "
+  "YEAROUTPUT": "Year output: ",
+  "TOTALOUTPUT": "Total output: "
 }

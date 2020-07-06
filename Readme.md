@@ -4,12 +4,12 @@ Display your SunnyPortal Solar Panel Inverter output
 
 | Status | Version | Date | 
 |:------- |:------- |:---- |
-| Working | 1.0.0 | 2020-01-28 |
+| Working | 1.1.0 | 2020-07-04 |
 
 #### What is this module doing?
 
 *MMM-SunnyPortal* is a [MagicMirror](https://github.com/MichMich/MagicMirror) module for displaying the 
-current, monthly and yearly power output of your SunnyPortal Solar Panels. 
+current, monthly, yearly and total power output of your SunnyPortal Solar Panels. 
 
 ### Example Screenshots
 
@@ -74,22 +74,24 @@ To configure the SunnyPortal module, you need to do the following:
 4. [optional] Add your own language translation file in the translations folder (currently english, dutch and french are provided)
 
 
-Add the module to the modules array in the `config/config.js` file by adding the following section. 
+Add this module to the modules array in the `config/config.js` file by adding the following example section.<br>You must include your SunnyPortal username and password, you can edit the config to include any of the configuration options descibed below. 
 
 ```javascript
 {
     module: 'MMM-SunnyPortal',
     position: 'bottom_left',
-    header: 'Solar Panels',                     // The header text above the module. Use: "" to remove.
+    header: 'Solar Panels',
     config: {
-        url: 'https://www.sunnyportal.com',     // The SunnyPortal website's URL
-        updateInterval: 900,                    // How many times do we update the graphs? 
-                                                // Note: Do not update too frequently or you will get locked out
-                                                // 15 Minutes is ideal
-        username: '',                           // Username for logging into https://www.sunnyportal.com/
-        password: '',                           // Password for logging into https://www.sunnyportal.com/
-        width: 500,                             // The total width of the module
-        height: 400                             // The total height of the module
+    	url: 'https://www.sunnyportal.com',
+        updateInterval: 900,
+        username: '',             //Required: Your Sunnyportal Username
+        password: '',             //Required: Your Sunnyportal Password
+        width: 500,
+        height: 400,
+        chartcolor1: '#121212',
+        chartcolor2: '#909090',
+        convertUnits: true,
+        includeGraphs: ['all'],
     }
 },
 ```
@@ -98,17 +100,22 @@ Add the module to the modules array in the `config/config.js` file by adding the
 
 #### Configuration Options 
 
-| Option            | Default                       | Description  |
-|:----------------- |:----------------------------- |:------------ | 
-| url               | https://www.sunnyportal.com   | The SunnyPortal website's URL |
-| updateInterval    | 900                           | Module data update rate [in seconds] |
-| username          |                               | Username for logging into url |
-| password          |                               | Password for logging into url |
+| Option            | Description  |
+|:----------------- |:------------ | 
+| url               | An alternative URL to the SunnyPortal website.<br>*Optional*<br>*Default value:* https://www.sunnyportal.com |
+| updateInterval    | Module data update rate. [in seconds]<br>*Optional*<br>*Default and minimum value:* `900` (a lower value is ignored)|
+| username          | Your Sunnyportal `'Username'`<br>**Required** |
+| password          | Your SunnyPortal `'Password'`<br>**Required** |
+| width             | The width of the module.<br>*Optional*<br>*Default value:* `500` |
+| height            | The height of the module.<br>*Optional*<br>*Default value:* `400` |
+| chartcolor1<br>chartcolor2 | The graphs have a gradient color. You can set chartcolor1 and chartcolor2 to any HEX code, HTML name or RGB code.<br>Set both to the same color code to have a solid graph without a gradient.<br>*Optional, example values:* `'red'`, `'#FF00FF'`, `'rgb(255,255,255)'`<br>*Default values:* chartcolor1: `'#121212'`, chartcolor2: `'#909090'` |
+| convertUnits      | Convert kwH to MWh if needed<br>*Optional, possible values:* `true`, `false`<br>*Default value:* `true` |
+| includeGraphs     | Takes an array with the graphs to include.<br>The array can have 1, 2, 3 or 4 elements.<br>Using `['All']` is equal to `['Day', 'Month', 'Year', 'Total']`<br>Example: `['Month', 'Day']` displays the 2 graphs in that order<br>*Possible values:* `['all']` or any combination of `['day', 'month', 'year', 'total']` (case insensitive)<br>*Default* `['All']`|
 
-
-> :warning: Please do not use an **updateInterval** shorter than 15 minutes (900 seconds). A too short 
-> setting will cause your account to get locked out by SunnyPortal, and the power output is always 
-> calculated in a time interval of 15 minutes...so there is no need to update in a shorter time interval
+> :warning: Please do not edit the module files to use an **updateInterval** shorter than 15 minutes (900 seconds).
+> A lower setting can lockout your account on the SunnyPortal URL. The power output on SMA SunnyPortal is always
+> calculated in a time interval of 15 minutes...so there is no need to update in a shorter time interval!
+> There is a check to have a minimum value of 900 seconds. Any lower value is ignored.
 
 #### Contribution
 
