@@ -92,7 +92,7 @@ Module.register("MMM-SunnyPortal",{
 				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
 				msgDay.innerHTML = this.translate("DAYOUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
 			} else {
-				// Only show 2 digits, display in kWH
+				// Only show 2 digits, display in kWh
 				total = Math.round( total * 100 + Number.EPSILON ) / 100;
 				msgDay.innerHTML = this.translate("DAYOUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
 			}
@@ -116,7 +116,7 @@ Module.register("MMM-SunnyPortal",{
 				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
 				msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
 			} else {
-				// Only show 2 digits, display in kWH
+				// Only show 2 digits, display in kWh
 				total = Math.round( total * 100 + Number.EPSILON ) / 100;
 				msgMonth.innerHTML = this.translate("MONTHOUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
 			}
@@ -140,7 +140,7 @@ Module.register("MMM-SunnyPortal",{
 				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
 				msgYear.innerHTML = this.translate("YEAROUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
 			} else {
-				// Only show 2 digits, display in kWH
+				// Only show 2 digits, display in kWh
 				total = Math.round( total * 100 + Number.EPSILON ) / 100;
 				msgYear.innerHTML = this.translate("YEAROUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
 			}
@@ -164,7 +164,7 @@ Module.register("MMM-SunnyPortal",{
 				total = Math.round( (total / 1000) * 100 + Number.EPSILON ) / 100;
 				msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total.toLocaleString(config.language) + "&hairsp;MWh";
 			} else {
-				// Only show 2 digits, display in kWH
+				// Only show 2 digits, display in kWh
 				total = Math.round( total * 100 + Number.EPSILON ) / 100;
 				msgTotal.innerHTML = this.translate("TOTALOUTPUT") + total.toLocaleString(config.language) + "&hairsp;kWh";
 			}
