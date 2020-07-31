@@ -74,7 +74,7 @@ To configure the SunnyPortal module, you need to do the following:
 4. [optional] Add your own language translation file in the translations folder (currently english, dutch and french are provided)
 
 
-Add this module to the modules array in the `config/config.js` file by adding the following example section.<br>You must include your SunnyPortal username and password, you can edit the config to include any of the configuration options descibed below. 
+Add this module to the modules array in the `config/config.js` file by adding the following example section.<br>You must include your SunnyPortal username and password, you can edit the config to include any of the configuration options described below. 
 
 ```javascript
 {
