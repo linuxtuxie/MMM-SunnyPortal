@@ -16,8 +16,7 @@ var OPEN_INVERTER_URL = '/FixedPages/InverterSelection.aspx';
 var SET_FILE_DATE_URL = '/FixedPages/InverterSelection.aspx';
 var CURRENT_PRODUCTION_URL = '/Dashboard?_=1';
 var DOWNLOAD_RESULTS_URL = '/Templates/DownloadDiagram.aspx?down=diag';
-var DASHBOARD_URL = '/FixedPages/Dashboard.aspx';
-var USERPROFILE_URL = '/Templates/UserProfile.aspx';
+var NEXT_URL = ['/FixedPages/Dashboard.aspx', '/Templates/UserProfile.aspx', '/FixedPages/HoManEnergyRedesign.aspx'];
 
 /**
  * Sunny Portal API Node Library
@@ -72,7 +71,7 @@ var SunnyPortal = function(opts) {
 		requestOpts = {
 			headers : {
 				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 77.0 (64-bit) for Windows
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.105 Safari/537.36',
 			},
 			form : {
 				__VIEWSTATE : viewstate,
@@ -95,16 +94,21 @@ var SunnyPortal = function(opts) {
 				return ;
 			}
 
-			// Hack to check for login. Should forward to dashboard.
-			if(httpResponse.headers.location && httpResponse.headers.location === DASHBOARD_URL) {
-				console.log("SUCCESSFULLY LOGGED IN TO DASHBOARD");
-				callback(err, jar);
-			} else if(httpResponse.headers.location && httpResponse.headers.location === USERPROFILE_URL) {
-				console.log("SUCCESSFULLY LOGGED IN TO USERPROFILE");
-				callback(err, jar);
-			} else {
-				console.log("Login Failed, no redirect to Dashboard or UserProfile"+ httpResponse.headers.location);
-				callback(new Error('Login Failed, no redirect to Dashboard or UserProfile'));
+			// Hack to check for login. Should forward to one of the locations listed in the NEXT_URL variable.
+			var loggedin = false;
+			for (var i = 0; i < NEXT_URL.length; i++) {
+				if (httpResponse.headers.location && httpResponse.headers.location === NEXT_URL[i]) {
+					loggedin = true;
+					console.log("SUCCESSFULLY LOGGED IN TO " + NEXT_URL[i]);
+					callback(err, jar);
+					break;
+				}
+			}
+			
+			if (loggedin === false) {
+				console.log("Login Failed, no redirect to any of the known url's " + NEXT_URL.join(", "));
+				console.log("You are being redirected to the yet unkown url: " + httpResponse.headers.location);
+				callback(new Error("Login Failed, no redirect to any of the known url's" + NEXT_URL.join(", ")));
 			}
 		});
 		});
