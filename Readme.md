@@ -4,7 +4,7 @@ Display your SunnyPortal Solar Panel Inverter output
 
 | Status | Version | Date | 
 |:------- |:------- |:---- |
-| Working | 1.1.0 | 2020-07-04 |
+| Working | 1.2.0 | 2020-08-01 |
 
 #### What is this module doing?
 
