@@ -42,7 +42,8 @@ Module.register("MMM-SunnyPortal",{
 		return {
 			en: "translations/en.json",
 			nl: "translations/nl.json",
-			fr: "translations/fr.json"
+			fr: "translations/fr.json",
+			de: "translations/de.json"
 		};
 	},
   
