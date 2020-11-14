@@ -16,7 +16,7 @@ var OPEN_INVERTER_URL = '/FixedPages/InverterSelection.aspx';
 var SET_FILE_DATE_URL = '/FixedPages/InverterSelection.aspx';
 var CURRENT_PRODUCTION_URL = '/Dashboard?_=1';
 var DOWNLOAD_RESULTS_URL = '/Templates/DownloadDiagram.aspx?down=diag';
-var NEXT_URL = ['/FixedPages/Dashboard.aspx', '/Templates/UserProfile.aspx', '/FixedPages/HoManEnergyRedesign.aspx'];
+var NEXT_URL = ['/FixedPages/Dashboard.aspx', '/Templates/UserProfile.aspx', '/FixedPages/HoManEnergyRedesign.aspx', '/FixedPages/PlantProfile.aspx', '/FixedPages/HoManLive.aspx', '/Homan/ConsumerBalance#'];
 
 /**
  * Sunny Portal API Node Library
@@ -70,8 +70,8 @@ var SunnyPortal = function(opts) {
 
 		requestOpts = {
 			headers : {
-				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 77.0 (64-bit) for Windows
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',
+				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 82.0.3 (64-bit) for Windows
+				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0',
 			},
 			form : {
 				__VIEWSTATE : viewstate,
