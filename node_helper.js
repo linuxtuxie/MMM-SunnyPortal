@@ -6,11 +6,25 @@
  * MIT Licensed.
  *
  */
-
 var NodeHelper = require('node_helper');
 var request = require('request');
 var flow = require('flow');
 
+// Uncomment the following 2 lines to perform a network capture with tcpdump for debugging purposes
+// Start a network capture by running the below command
+//  tcpdump -i [interface name eg. eth0] -w captured-packets.pcap
+// Next run 
+//  npm start debug
+// Once you have captured the packets you can decode the HTTPS traffic with Wireshark by opening the captured-packets.pcap file
+// Use the following settings in Wireshark: 
+//  - Set 'tls' as display filter
+//  - Select the /tmp/sslkey.log file in Preferences -> Protocols -> TLS -> (Pre)-Master-Secret log filename
+
+//var sslkeylog = require('sslkeylog');
+//sslkeylog.setLog('/tmp/sslkey.log').hookAll();
+
+// The SunnyPortal website is very picky about which Browser versions it accepts, here I am using Firefox 84.0.1 (64bit) for Windows
+var USERAGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:84.0) Gecko/20100101 Firefox/84.0';
 var LOGIN_URL = '/Templates/Start.aspx';
 var OPEN_INVERTER_URL = '/FixedPages/InverterSelection.aspx';
 var SET_FILE_DATE_URL = '/FixedPages/InverterSelection.aspx';
@@ -23,7 +37,7 @@ var NEXT_URL = ['/FixedPages/Dashboard.aspx', '/Templates/UserProfile.aspx', '/F
  * For interfacing with Sunny Portal.
  *
  * @module
- * @param {Object} opts  Need to pass in a url, username, password, and your plantOID.
+ * @param {Object} opts  Need to pass a url, username and password.
  */
 var SunnyPortal = function(opts) {
 
@@ -42,97 +56,126 @@ var SunnyPortal = function(opts) {
 	var password = opts.password;
 	var plantOID = "";
 
-	var _login = function(callback) {
-	var jar = request.jar(); // create new cookie jar
-	var viewstate = null;
-	var viewstategenerator = null;
-
-	var requestOpts = {
-		jar : jar,
-		agentOptions: {
-			rejectUnauthorized: false
-		}
-	};
-
-	// Let's first fetch the VIEWSTATE & VIEWSTATEGENERATOR hidden parameter values
-	request.get(url + LOGIN_URL, requestOpts, function (err, httpResponse, body) {
-		if (err) {
-			console.error('Unable to fetch login page: ', err);
-			callback(err);
-			return ;
-		}
-		console.log("Cookie Value: " + jar.getCookieString(url));
-		// Filter out both values for the VIEWSTATE & VIEWSTATEGENERATOR hidden parameter
-		viewstate = body.match(/<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="(.*)" \/>/)[1];
-		viewstategenerator = body.match(/<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="(.*)" \/>/)[1];
-		console.log("Fetched VIEWSTATE value: " + viewstate);
-		console.log("Fetched VIEWSTATEGENERATOR value: " + viewstategenerator);
-
-		requestOpts = {
+	var _login = function(datetype,callback) {
+		var jar = request.jar(); // create new cookie jar
+		var viewstate = null;
+		var viewstategenerator = null;
+		var clientbrowserversion = null;
+		
+		var requestOpts = {
 			headers : {
-				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 82.0.3 (64-bit) for Windows
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:82.0) Gecko/20100101 Firefox/82.0',
-			},
-			form : {
-				__VIEWSTATE : viewstate,
-				__VIEWSTATEGENERATOR : viewstategenerator,
-				ctl00$ContentPlaceHolder1$Logincontrol1$txtUserName : username,
-				ctl00$ContentPlaceHolder1$Logincontrol1$txtPassword : password,
-				ctl00$ContentPlaceHolder1$Logincontrol1$LoginBtn : 'Login',
+				// We need to simulate a Browser which the SunnyPortal accepts...
+				'User-Agent' : USERAGENT,
 			},
 			jar : jar,
-			agentOptions: {
+			gzip : true,
+			agentOptions : {
 				rejectUnauthorized: false
-			}
+			},
 		};
-
-		// Now Let's login by Posting the data
-		request.post(url + LOGIN_URL + "?ReturnURl=%2f", requestOpts, function (err, httpResponse, body) {
+		console.log("[_login] Trying to login to " + url + LOGIN_URL + "?ReturnUrl=%2f for accessing " + datetype + " data");
+		// Let's first fetch the VIEWSTATE, VIEWSTATEGENERATOR & ClientBrowserVersion parameter values
+		request.get(url + LOGIN_URL + "?ReturnUrl=%2f", requestOpts, function (err, httpResponse, body) {
 			if (err) {
-				console.error('login failed:', err);
+				console.error('[_login] Unable to fetch login page: ', err);
 				callback(err);
 				return ;
 			}
+			console.log("[_login] Cookie Value: " + jar.getCookieString(url));
+			// Filter out both values for the VIEWSTATE & VIEWSTATEGENERATOR hidden parameter
+			viewstate = body.match(/<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="(.*)" \/>/)[1];
+			viewstategenerator = body.match(/<input type="hidden" name="__VIEWSTATEGENERATOR" id="__VIEWSTATEGENERATOR" value="(.*)" \/>/)[1];
+			// Filter out the ClientBrowserVersion value, we also need this one when we perform the POST request
+			clientbrowserversion = body.match(/\$\('\#ClientBrowserVersion'\).val\('(.*)'\);\/\/]]\>/)[1]
 
-			// Hack to check for login. Should forward to one of the locations listed in the NEXT_URL variable.
-			var loggedin = false;
-			for (var i = 0; i < NEXT_URL.length; i++) {
-				if (httpResponse.headers.location && httpResponse.headers.location === NEXT_URL[i]) {
-					loggedin = true;
-					console.log("SUCCESSFULLY LOGGED IN TO " + NEXT_URL[i]);
-					callback(err, jar);
-					break;
-				}
-			}
+			console.log("[_login] Fetched VIEWSTATE value: " + viewstate);
+			console.log("[_login] Fetched VIEWSTATEGENERATOR value: " + viewstategenerator);
+			console.log("[_login] Fetched ClientBrowserVersion: " + clientbrowserversion);
 			
-			if (loggedin === false) {
-				console.log("Login Failed, no redirect to any of the known url's " + NEXT_URL.join(", "));
-				console.log("You are being redirected to the yet unkown url: " + httpResponse.headers.location);
-				callback(new Error("Login Failed, no redirect to any of the known url's" + NEXT_URL.join(", ")));
-			}
-		});
+			requestOpts = {
+				headers : {
+					// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 82.0.3 (64-bit) for Windows
+					'User-Agent' : USERAGENT,
+				},
+				jar : jar,
+				gzip : true,
+				agentOptions : {
+					rejectUnauthorized : false
+				},
+				form : {
+					__VIEWSTATE : viewstate,
+					__VIEWSTATEGENERATOR : viewstategenerator,
+					ctl00$ContentPlaceHolder1$Logincontrol1$txtUserName : username,
+					ctl00$ContentPlaceHolder1$Logincontrol1$txtPassword : password,
+					ctl00$ContentPlaceHolder1$Logincontrol1$LoginBtn : 'Login',
+					ctl00$ContentPlaceHolder1$hiddenLanguage : 'en-us',
+					ctl00$ContentPlaceHolder1$Logincontrol1$ServiceAccess : 'true',
+					ctl00$ContentPlaceHolder1$Logincontrol1$RedirectURL : '',
+					ctl00$ContentPlaceHolder1$Logincontrol1$RedirectPlant : '',
+					ctl00$ContentPlaceHolder1$Logincontrol1$RedirectPage : '',
+					ctl00$ContentPlaceHolder1$Logincontrol1$RedirectDevice : '',
+					ctl00$ContentPlaceHolder1$Logincontrol1$RedirectOther : '',
+					ctl00$ContentPlaceHolder1$Logincontrol1$PlantIdentifier : '',
+					__EVENTTARGET : '',
+					__EVENTARGUMENT : '',
+					ClientBrowserVersion : clientbrowserversion,
+				},	
+			};
+
+			// Now Let's login by Posting the data
+			request.post(url + LOGIN_URL + "?ReturnUrl=%2fFixedPages%2fDashboard.aspx", requestOpts, function (err, httpResponse, body) {
+				if (err) {
+					console.error('[_login] login failed: ', err);
+					callback(err);
+					return ;
+				}
+
+				// Hack to check for login. Should forward to one of the locations listed in the NEXT_URL variable.
+				var loggedin = false;
+				for (var i = 0; i < NEXT_URL.length; i++) {
+					if (httpResponse.headers.location && httpResponse.headers.location === NEXT_URL[i]) {
+						loggedIn = true;
+						console.log("[_login] SUCCESSFULLY LOGGED IN TO " + NEXT_URL[i]);
+						callback(err, jar);
+						break;
+					}
+				}
+				//console.log("Cookie Value after login: " + jar.getCookieString(url));
+				if (loggedIn === false) {
+					console.log("[_login] Login Failed, no redirect to any of the known url's: " + NEXT_URL.join(", "));
+					console.log("[_login] You are being redirected to the yet unkown url: " + httpResponse.headers.location);
+					loginerror = body.match(/<span id="ctl00_ContentPlaceHolder1_Logincontrol1_ErrorLabel" class="base-error">(.*)<\/span>/)[1]
+					console.log("[_login] Website Error Message: " + loginerror);
+					callback(new Error("[_login] Login Failed, no redirect to any of the known url's: " + NEXT_URL.join(", ")));
+				} 
+			});
 		});
 	};
 
 	var _openInverter = function(jar, callback) {
 
 		var requestOpts = {
+			headers : {
+				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 82.0.3 (64-bit) for Windows
+				'User-Agent' : USERAGENT,	
+			},
 			method : 'GET',
 			jar : jar,
-			agentOptions: {
+			gzip : true,
+			agentOptions : {
 				rejectUnauthorized: false
-			}
+			},
 		}
 
 		request(url + OPEN_INVERTER_URL, requestOpts, function (err, httpResponse, body) {
 			if (err) {
-				console.error('Could not open inverter')
+				console.error('[_openInverter] Could not open inverter')
 				callback(err);
 			}
-			console.log("HTTP Result: "+ httpResponse.statusCode);
+			console.log("[_openInverter] HTTP Result: " + httpResponse.statusCode);
 			// Filter out value for the ctl00_HiddenPlantOID hidden parameter
 			plantOID = body.match(/<input type="hidden" name="ctl00\$HiddenPlantOID" id="ctl00_HiddenPlantOID" value="(.*)" \/>/)[1];
-			console.log("Fetched ctl00_HiddenPlantOID value: " + plantOID);
+			console.log("[_openInverter] Fetched ctl00_HiddenPlantOID value: " + plantOID);
 			callback(err, body);
 		});
 	};
@@ -141,8 +184,13 @@ var SunnyPortal = function(opts) {
 
 		var requestOpts = {
 			headers : {
-				// We need to simulate a Browser which the SunnyPortal accepts...here I am Using Firefox 77.0 (64-bit) for Windows
-				'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:77.0) Gecko/20100101 Firefox/77.0',			
+				// We need to simulate a Browser which the SunnyPortal accepts...
+				'User-Agent' : USERAGENT,			
+			},
+			jar : jar,
+			gzip : true,
+			agentOptions : {
+				rejectUnauthorized : false
 			},
 			form : {
 				__EVENTTARGET : '',
@@ -151,10 +199,6 @@ var SunnyPortal = function(opts) {
 				ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$UseIntervalHour : '0',                 
 				ctl00$HiddenPlantOID : plantOID
 			},
-			jar : jar,
-			agentOptions: {
-				rejectUnauthorized: false
-			}
         };
         // Depending on the datetype we are going to add the necessary hidden parameters to the form
         if (datetype == 'day') {
@@ -162,11 +206,11 @@ var SunnyPortal = function(opts) {
 			requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$_datePicker$textBox'] = month + '/' + day + '/' + year;
         } else if (datetype == 'month') {
             requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$SelectedIntervalID'] = '4';
-            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerMonth'] =  month;
-            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerYear'] =  year;
+            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerMonth'] = month;
+            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerYear'] = year;
         } else if (datetype == 'year') {
             requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$SelectedIntervalID'] = '5';
-            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerYear'] =  year;
+            requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$DatePickerYear'] = year;
 		} else if (datetype == 'total') {
             requestOpts.form['ctl00$ContentPlaceHolder1$UserControlShowInverterSelection1$SelectedIntervalID'] = '6';
 		}
@@ -174,38 +218,44 @@ var SunnyPortal = function(opts) {
 		// If the datetype is day and the provided date is the current date, we may not post the SET_FILE_DATE_URL
 		var now = new Date();
         if (datetype == 'day' && day == now.getDate() && month == now.getMonth()+1 && year == now.getFullYear()) {
-			console.log ("Skip setting date because we are requesting power data from today");
+			console.log ("[_setFileDate] Skip setting date because we are requesting power data for today");
 			callback();
 		} else {
 			request.post(url + SET_FILE_DATE_URL, requestOpts, function (err, httpResponse, body) {
 				if (err) {
-					console.error('Setting File Date failed:', err);
+					console.error('[_setFileDate] Setting File Date failed: ', err);
 					callback(err);
 					return ;
 				};
-			console.log("HTTP Result: "+ httpResponse.statusCode);
+			console.log("[_setFileDate] HTTP Result " + datetype + " for " + month + "/" + day +"/" + year + ": " + httpResponse.statusCode);
 			callback(err, body);
 		});
 		}
 	};
 
-	var _downloadResults = function(jar, callback) {
+	var _downloadResults = function(jar, datetype, callback) {
 		// This call is going to return a CSV file
 		var requestOpts = {
+			headers : {
+				// We need to simulate a Browser which the SunnyPortal accepts...
+				'User-Agent' : USERAGENT,
+			},
 			method : 'GET',
 			jar : jar,
-			agentOptions: {
-				rejectUnauthorized: false
-			}
+			gzip : true,
+			agentOptions : {
+				rejectUnauthorized : false
+			},
+			
 		}
 
 		request(url + DOWNLOAD_RESULTS_URL, requestOpts, function(err, httpResponse, body) {
 			if (err) {
-				console.error('CSV download failed:', err);
+				console.error('[_downloadResults] CSV download for ' + datetype + ' failed: ', err);
 				callback(err);
 				return ;
             };
-			console.log("HTTP Result: "+ httpResponse.statusCode);
+			console.log("[_downloadResults] HTTP Result for " + datetype + ": "+ httpResponse.statusCode);
 			callback(err, body);
 		});
 	}
@@ -217,31 +267,39 @@ var SunnyPortal = function(opts) {
 	* @param {Number} month
 	* @param {Number} day
 	* @param {Number} year
-	* @param {Function} callback A callback function once current production is recieved.  Will return a JSON object of the current status.
+	* @param {Function} callback A callback function once current production is received.  Will return a JSON object of the current status.
 	*/
 	var currentProduction = function(callback) {
-		_login(function(err, jar) {
-			if(err) {
-				callback(err);
-			}
-
-			var requestOpts = {
-				method : 'GET',
-				jar : jar,
-				agentOptions: {
-					rejectUnauthorized: false
+		flow.exec(
+			function() {
+				_login('current', this);	
+			},
+			function(err, body) {
+	
+				var requestOpts = {
+					headers : {
+						// We need to simulate a Browser which the SunnyPortal accepts...
+						'User-Agent' : USERAGENT,
+					},
+					method : 'GET',
+					jar : jar,
+					gzip : true,
+					agentOptions : {
+						rejectUnauthorized : false
+					},		
 				}
-			}
 
-			// The timestamp is just ignored. Using 1.
-			request(url + CURRENT_PRODUCTION_URL, requestOpts, function (err, httpResponse, body) {
-				if (err) {
-					console.error('Could not get current production')
-					callback(err);
-				}
-				callback(err, JSON.parse(body));
-			});
-		});
+				// The timestamp is just ignored. Using 1.
+				request(url + CURRENT_PRODUCTION_URL, requestOpts, function (err, httpResponse, body) {
+					if (err) {
+						console.error('[currentProduction] Could not get current production')
+						callback(err);
+					}
+					callback(err, JSON.parse(body));
+				});
+			}
+		);
+	
 	};
 
 	/**
@@ -263,7 +321,7 @@ var SunnyPortal = function(opts) {
 		var finalJar;
 		flow.exec(
 			function() {
-				_login(this);
+				_login(datetype, this);
 			},
 			function(err, jar) {
 				finalJar = jar;
@@ -273,7 +331,7 @@ var SunnyPortal = function(opts) {
                 _setFileDate(datetype, month, day, year, finalJar, this);
 			},
 			function(err, body) {
-				_downloadResults(finalJar, this);
+				_downloadResults(finalJar, datetype, this);
 			},
 			function(err, body) {
 				var response = [[]];
@@ -300,11 +358,12 @@ var SunnyPortal = function(opts) {
                 // Jan 20;4.824
                 // Feb 20;
                 // Mar 20;
-
+				console.log("Downloaded the following RAW data for " + datetype);
+				console.log(body);
 				for(i=1; i<lineItems.length; i++) {
 					var entries = lineItems[i].split(';');
 					if(entries[0] && entries[1]) {
-                        if (datetype=='day') {
+                        if (datetype == 'day') {
 						    var ampm = entries[0].split(' ')[1];
 						    var time = entries[0].split(' ')[0];
 						    var hour = parseInt(time.split(':')[0]);
@@ -323,11 +382,11 @@ var SunnyPortal = function(opts) {
 						    if (hour == 0 && minute == 0) {
 							    date.setDate(date.getDate() + 1);
 						    }
-                        } else if (datetype=='month') {
+                        } else if (datetype == 'month') {
                             var d = entries[0].split('/')[1];
                             // I'm only interested in the day value...we are going to use the parameter value for month and year
                             date = new Date(year, month - 1 , d, 12, 0); // Using ISO Format
-                        } else if (datetype=='year') {
+                        } else if (datetype == 'year') {
                             var m = entries[0].split(' ')[0];
                             // Because only the last 2 digits of the year are returned we are going to use the year parameter value... 
                             // we could prepend the returned value with 20...but then the script will fail in the next century ;)
@@ -337,7 +396,7 @@ var SunnyPortal = function(opts) {
                                 'Oct', 'Nov', 'Dec'
                                 ];
                             date = new Date (year,months.indexOf(m), 1, 12, 0);
-                        } else if  (datetype=='total') {
+                        } else if  (datetype == 'total') {
 							// We do not need an actual date, because entries[0] already contains the year data values.
 							date = entries[0];
 						}
@@ -451,7 +510,7 @@ module.exports = NodeHelper.create({
 
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_DAY', {
-        data:  self.dayData
+        data: self.dayData
     });
   },
 
@@ -460,7 +519,7 @@ module.exports = NodeHelper.create({
 
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_MONTH', {
-        data:  self.monthData
+        data: self.monthData
     });
   },
 
@@ -469,7 +528,7 @@ module.exports = NodeHelper.create({
 
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_YEAR', {
-        data:  self.yearData
+        data: self.yearData
     });
   },
 
@@ -478,7 +537,7 @@ module.exports = NodeHelper.create({
 
     // Send all to script
     self.sendSocketNotification('SUNNYPORTAL_TOTAL', {
-        data:  self.totalData
+        data: self.totalData
     });
   },
 

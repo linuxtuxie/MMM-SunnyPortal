@@ -4,7 +4,7 @@ Display your SunnyPortal Solar Panel Inverter output
 
 | Status | Version | Date | 
 |:------- |:------- |:---- |
-| Working | 1.3.0 | 2020-11-14 |
+| Working | 1.4.0 | 2021-01-03 |
 
 #### What is this module doing?
 
@@ -30,6 +30,7 @@ This module depends on the following *npm* packages:
 * [request](https://github.com/request/request)  - Simplified HTTP client
 * [flow](https://github.com/willconant/flow-js)  - Makes it easy to express multi-step asynchronous logic in Node or the browser
 * [chartjs](https://github.com/chartjs/Chart.js) - Simple yet flexible JavaScript charting for designers & developers.
+* [sslkeylog](https://www.npmjs.com/package/sslkeylog) - sslkeylog is a module for easy generation of SSLKEYLOG files, which can be used later by Wireshark to decrypt SSL connections.
 
 These are also listed in the `package.json` file and should be installed automatically when using *npm*.
 However, those may require other packages. 
