@@ -131,7 +131,7 @@ var SunnyPortal = function(opts) {
 				}
 
 				// Hack to check for login. Should forward to one of the locations listed in the NEXT_URL variable.
-				var loggedin = false;
+				var loggedIn = false;
 				for (var i = 0; i < NEXT_URL.length; i++) {
 					if (httpResponse.headers.location && httpResponse.headers.location === NEXT_URL[i]) {
 						loggedIn = true;
